@@ -9,6 +9,7 @@ namespace kpt {
         terrainNu();
         ~terrainNu() override = default;
         obstacle & asciiArtPrint() override;
+        terrainNu* clone() const override;
     };
 }
 

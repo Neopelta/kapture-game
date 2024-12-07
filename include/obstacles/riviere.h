@@ -9,6 +9,7 @@ namespace kpt {
         riviere();
         ~riviere() override = default;
         obstacle & asciiArtPrint() override;
+        riviere* clone() const override;
     };
 }
 

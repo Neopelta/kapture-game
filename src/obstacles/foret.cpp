@@ -9,3 +9,7 @@ foret::foret() {
 obstacle &foret::asciiArtPrint() {
     return *this;
 }
+
+foret * foret::clone() const {
+    return new foret(*this);
+}

@@ -28,7 +28,7 @@ namespace kpt {
         virtual unite &fightWithCannonFodder(chairACanon &cf) = 0;
         virtual unite &fightWithShockTroop(troupeDeChoc &st) = 0;
         unite& takeFlag(drapeau &d);
-        virtual unite* clone() const = 0;
+        unite* clone() const override = 0;
         drapeau* operator*() const;
         unite& operator()();
         unite& asciiArtPrint() override = 0;

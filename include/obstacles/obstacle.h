@@ -6,8 +6,6 @@
 
 namespace kpt {
     class obstacle : public unitObstacle {
-
-    private:
         short unsigned int costToQuit;
     public:
         obstacle();
@@ -15,6 +13,7 @@ namespace kpt {
         short unsigned int operator*() const;
         obstacle &operator()(short unsigned int value);
         virtual obstacle& asciiArtPrint() = 0;
+        obstacle* clone() const override = 0;
     };
 }
 

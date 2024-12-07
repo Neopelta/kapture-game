@@ -1,33 +1,39 @@
 #include "../../include/game/cellule.h"
 
+#include "../../include/obstacles/terrainNu.h"
+
 using namespace kpt;
+
 cellule::cellule() {
     coord.first = 0;
     coord.second = 0;
-    entity = nullptr;
+    entity = new terrainNu;
 }
 
-cellule::~cellule() = default; // Not need to free some resources because the unit will be initialized before
+cellule::~cellule() {
+    delete entity;
+}
 
 cellule::cellule(const cellule &c) {
     coord.first = c.coord.first;
     coord.second = c.coord.second;
-    entity = c.entity;
+    entity = c.entity ? c.entity->clone() : nullptr;
 }
 
 cellule &cellule::operator=(const cellule &c) {
     if (this != &c) {
         coord.first = c.coord.first;
         coord.second = c.coord.second;
-        entity = c.entity;
+        delete entity;
+        entity = c.entity ? c.entity->clone() : nullptr;
     }
     return *this;
 }
 
-cellule::cellule(short unsigned int x, short unsigned int y) {
+cellule::cellule(short unsigned int x, short unsigned int y, unitObstacle *uo) {
     coord.first = x;
     coord.second = y;
-    entity = nullptr;
+    entity = uo ? uo->clone() : new terrainNu;
 }
 
 cellule &cellule::operator()(unitObstacle &uo) {

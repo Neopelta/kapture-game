@@ -9,6 +9,7 @@ namespace kpt {
         foret();
         ~foret() override = default;
         obstacle & asciiArtPrint() override;
+        foret* clone() const override;
     };
 }
 

@@ -9,3 +9,7 @@ riviere::riviere() {
 obstacle &riviere::asciiArtPrint() {
     return *this;
 }
+
+riviere * riviere::clone() const {
+    return new riviere(*this);
+}

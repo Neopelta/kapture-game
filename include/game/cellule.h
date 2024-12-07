@@ -17,7 +17,7 @@ namespace kpt {
         ~cellule();
         cellule(const cellule &c);
         cellule &operator=(const cellule &c);
-        cellule(short unsigned int x, short unsigned int y);
+        cellule(short unsigned int x, short unsigned int y, unitObstacle *uo = nullptr);
         cellule &operator()(unitObstacle &uo);
         std::pair<short unsigned int, short unsigned int> operator*() const;
         cellule &operator()(joueur &j1, joueur &j2);

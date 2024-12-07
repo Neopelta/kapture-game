@@ -1,10 +1,9 @@
 #ifndef DRAPEAU_H
 #define DRAPEAU_H
-#include "../units/unite.h"
-
+#include "../unitObstacle.h"
 
 namespace kpt {
-    class drapeau {
+    class drapeau : public unitObstacle {
         short unsigned int initialPosX;
         short unsigned int initialPosY;
         short unsigned int currentPosX;
@@ -12,6 +11,10 @@ namespace kpt {
 
     public:
         drapeau();
+        ~drapeau() override = default;
+        unitObstacle &asciiArtPrint() override;
+        drapeau* clone() const override;
+
     };
 }
 

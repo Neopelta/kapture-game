@@ -10,3 +10,8 @@ terrainNu::terrainNu() {
 obstacle &terrainNu::asciiArtPrint() {
     return *this;
 }
+
+terrainNu *terrainNu::clone() const {
+    return new terrainNu(*this);
+}
+

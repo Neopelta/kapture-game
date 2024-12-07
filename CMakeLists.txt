@@ -29,3 +29,19 @@ add_executable(kapture main.cpp
         include/game/plateau.h
         include/game/kaptureGame.h
 )
+
+include(FetchContent)
+FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+)
+FetchContent_MakeAvailable(googletest)
+
+enable_testing()
+
+add_executable(kapture_tests
+        test/test.cpp
+)
+
+target_link_libraries(kapture_tests gtest_main gtest)
+add_test(NAME KaptureTests COMMAND kapture_tests)

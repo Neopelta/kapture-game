@@ -3,13 +3,14 @@
 
 #include "obstacle.h"
 
-
-class foret : public obstacle{
-public:
-    foret();
-    ~foret() override = default;
-};
-
+namespace kpt {
+    class foret : public obstacle{
+    public:
+        foret();
+        ~foret() override = default;
+        obstacle & asciiArtPrint() override;
+    };
+}
 
 
 #endif

@@ -6,6 +6,7 @@
 #include "../../include/units/eclaireur.h"
 #include "../../include/units/troupeDeChoc.h"
 
+using namespace kpt;
 const short unsigned int joueur::NUMBER_OF_SCOOTS = 2;
 const short unsigned int joueur::NUMBER_OF_SHOCK_TROOPS = 4;
 const short unsigned int joueur::NUMBER_OF_CANON_FODDER = 6;

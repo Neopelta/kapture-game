@@ -4,6 +4,8 @@
 #include "include/units/eclaireur.h"
 #include "include/units/troupeDeChoc.h"
 
+using namespace kpt;
+
 int main() {
     eclaireur e1 = eclaireur();
     eclaireur e2 = eclaireur();

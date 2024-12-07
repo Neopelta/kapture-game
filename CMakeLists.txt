@@ -4,7 +4,7 @@ project(kapture)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(kapture main.cpp
-        src/unites/unite.cpp src/unitObstacle.cpp
+        src/unites/unite.cpp
         include/unitObstacle.h include/units/unite.h
         include/units/eclaireur.h
         include/units/chairACanon.h

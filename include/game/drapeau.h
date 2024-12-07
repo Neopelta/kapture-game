@@ -3,16 +3,16 @@
 #include "../units/unite.h"
 
 
-class drapeau {
-    short unsigned int initialPosX;
-    short unsigned int initialPosY;
-    short unsigned int currentPosX;
-    short unsigned int currentPosY;
+namespace kpt {
+    class drapeau {
+        short unsigned int initialPosX;
+        short unsigned int initialPosY;
+        short unsigned int currentPosX;
+        short unsigned int currentPosY;
 
-public:
-    drapeau();
-};
-
-
+    public:
+        drapeau();
+    };
+}
 
 #endif

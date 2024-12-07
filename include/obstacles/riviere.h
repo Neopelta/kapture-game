@@ -3,11 +3,13 @@
 
 #include "obstacle.h"
 
-
-class riviere : public obstacle {
-public:
-    riviere();
-    ~riviere() override = default;
-};
+namespace kpt {
+    class riviere : public obstacle {
+    public:
+        riviere();
+        ~riviere() override = default;
+        obstacle & asciiArtPrint() override;
+    };
+}
 
 #endif

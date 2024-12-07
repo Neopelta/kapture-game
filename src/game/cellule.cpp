@@ -1,5 +1,6 @@
 #include "../../include/game/cellule.h"
 
+using namespace kpt;
 cellule::cellule() {
     coord.first = 0;
     coord.second = 0;

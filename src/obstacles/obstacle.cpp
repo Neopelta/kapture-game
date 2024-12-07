@@ -1,5 +1,6 @@
 #include "../../include/obstacles/obstacle.h"
 
+using namespace kpt;
 obstacle::obstacle() : costToQuit(0) {}
 
 short unsigned int obstacle::operator*() const {

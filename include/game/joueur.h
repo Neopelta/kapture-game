@@ -5,25 +5,26 @@
 
 #include "drapeau.h"
 
-class unite;
+namespace kpt {
+    class unite;
+    class joueur {
+        short unsigned int id;
+        static const short unsigned int NUMBER_OF_SCOOTS;
+        static const short unsigned int NUMBER_OF_SHOCK_TROOPS;
+        static const short unsigned int NUMBER_OF_CANON_FODDER;
+        std::vector<unite*> units;
+        drapeau flag;
+        joueur &initializeUnits();
 
-class joueur {
-    short unsigned int id;
-    static const short unsigned int NUMBER_OF_SCOOTS;
-    static const short unsigned int NUMBER_OF_SHOCK_TROOPS;
-    static const short unsigned int NUMBER_OF_CANON_FODDER;
-    std::vector<unite*> units;
-    drapeau flag;
-    joueur &initializeUnits();
-
-public:
-    joueur();
-    ~joueur();
-    joueur(short unsigned int id);
-    joueur(const joueur &j);
-    joueur& operator=(const joueur &j);
-    std::vector<unite*>operator*() const;
-    bool operator<(const joueur &j) const;
-};
+    public:
+        joueur();
+        ~joueur();
+        joueur(short unsigned int id);
+        joueur(const joueur &j);
+        joueur& operator=(const joueur &j);
+        std::vector<unite*>operator*() const;
+        bool operator<(const joueur &j) const;
+    };
+}
 
 #endif

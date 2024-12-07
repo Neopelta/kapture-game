@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+using namespace kpt;
 eclaireur::eclaireur() {
     maximalMove = 5;
     initialPosX = 0;
@@ -36,3 +37,8 @@ bool eclaireur::canTakeFlag() {
 eclaireur *eclaireur::clone() const {
     return new eclaireur(*this);
 }
+
+unite &eclaireur::asciiArtPrint() {
+    return *this;
+}
+

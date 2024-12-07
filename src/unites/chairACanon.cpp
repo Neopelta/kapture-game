@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+using namespace kpt;
 chairACanon::chairACanon() {
     maximalMove = 3;
     initialPosX = 0;
@@ -38,4 +39,8 @@ bool chairACanon::canTakeFlag() {
 
 chairACanon *chairACanon::clone() const {
     return new chairACanon(*this);
+}
+
+unite &chairACanon::asciiArtPrint() {
+    return *this;
 }

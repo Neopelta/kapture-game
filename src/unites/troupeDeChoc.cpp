@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+using namespace kpt;
 troupeDeChoc::troupeDeChoc() {
     maximalMove = 2;
     initialPosX = 0;
@@ -47,4 +48,8 @@ bool troupeDeChoc::canTakeFlag() {
 
 troupeDeChoc *troupeDeChoc::clone() const {
     return new troupeDeChoc(*this);
+}
+
+unite &troupeDeChoc::asciiArtPrint() {
+    return *this;
 }

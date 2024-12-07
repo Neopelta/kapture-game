@@ -3,13 +3,14 @@
 
 #include "obstacle.h"
 
-
-class terrainNu : public obstacle {
-public:
-    terrainNu();
-    ~terrainNu() override = default;
-};
-
+namespace kpt {
+    class terrainNu : public obstacle {
+    public:
+        terrainNu();
+        ~terrainNu() override = default;
+        obstacle & asciiArtPrint() override;
+    };
+}
 
 
 #endif

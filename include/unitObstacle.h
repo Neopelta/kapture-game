@@ -1,10 +1,12 @@
 #ifndef UNITOBSTACLE_H
 #define UNITOBSTACLE_H
 
-
-class unitObstacle {
-public:
-    virtual ~unitObstacle() = default;
-};
+namespace kpt {
+    class unitObstacle {
+    public:
+        virtual ~unitObstacle() = default;
+        virtual unitObstacle &asciiArtPrint() = 0;
+    };
+}
 
 #endif

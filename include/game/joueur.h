@@ -23,7 +23,6 @@ public:
     joueur(const joueur &j);
     joueur& operator=(const joueur &j);
     std::vector<unite*>operator*() const;
-    bool isFlagStolen() const;
     bool operator<(const joueur &j) const;
 };
 

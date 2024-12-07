@@ -72,10 +72,6 @@ std::vector<unite*> joueur::operator*() const {
     return units;
 }
 
-bool joueur::isFlagStolen() const {
-    return *flag != nullptr;
-}
-
 bool joueur::operator<(const joueur &j) const {
     return id < j.id;
 }

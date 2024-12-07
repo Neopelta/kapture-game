@@ -8,15 +8,9 @@ class drapeau {
     short unsigned int initialPosY;
     short unsigned int currentPosX;
     short unsigned int currentPosY;
-    unite *holder;
 
 public:
     drapeau();
-    ~drapeau();
-    drapeau(const drapeau &d);
-    drapeau &operator=(const drapeau &d);
-    unite *operator*() const;
-    drapeau& operator()(unite &u);
 };
 
 

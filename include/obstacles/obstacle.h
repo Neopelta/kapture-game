@@ -12,7 +12,7 @@ namespace kpt {
         virtual ~obstacle() = default;
         short unsigned int operator*() const;
         obstacle &operator()(short unsigned int value);
-        virtual obstacle& asciiArtPrint() = 0;
+        std::string asciiArtPrint() override = 0;
         obstacle* clone() const override = 0;
     };
 }

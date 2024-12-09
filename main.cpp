@@ -1,34 +1,16 @@
 #include <iostream>
-
-#include "include/units/chairACanon.h"
-#include "include/units/eclaireur.h"
-#include "include/units/troupeDeChoc.h"
+#include "include/game/kaptureGame.h"
 
 using namespace kpt;
 
 int main() {
-    eclaireur e1 = eclaireur();
-    eclaireur e2 = eclaireur();
-    chairACanon c1 = chairACanon();
-    chairACanon c2 = chairACanon();
-    troupeDeChoc tc1 = troupeDeChoc();
-    troupeDeChoc tc2 = troupeDeChoc();
+    joueur j1 = joueur(1);
+    joueur j2 = joueur(2);
 
-    e1.fight(e2);
-    e1.fight(tc2);
-    e1.fight(c2);
+    kaptureGame<25, 25> *kapture = kaptureGame<25, 25>::getInstance(j1, j2);
 
-    std::cout << std::endl;
+    std::cout << **kapture << std::endl;
 
-    c1.fight(e2);
-    c1.fight(tc2);
-    c1.fight(c2);
-
-    std::cout << std::endl;
-
-    tc1.fight(e2);
-    tc1.fight(tc2);
-    tc2.fight(c2);
-
+    delete kapture;
     return 0;
 }

@@ -28,6 +28,7 @@ add_executable(kapture main.cpp
         src/game/joueur.cpp
         include/game/plateau.h
         include/game/kaptureGame.h
+        src/unitObstacle.cpp
 )
 
 include(FetchContent)

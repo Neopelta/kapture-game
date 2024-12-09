@@ -15,7 +15,8 @@ namespace kpt {
         unite& fight(unite &u) override;
         bool canTakeFlag() override;
         chairACanon* clone() const override;
-        unite& asciiArtPrint() override;
+
+        std::string asciiArtPrint() override;
     };
 }
 

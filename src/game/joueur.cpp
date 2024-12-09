@@ -76,3 +76,11 @@ std::vector<unite*> joueur::operator*() const {
 bool joueur::operator<(const joueur &j) const {
     return id < j.id;
 }
+
+drapeau joueur::operator!() const {
+    return flag;
+}
+
+short unsigned int joueur::operator()() const {
+    return id;
+}

@@ -38,7 +38,9 @@ eclaireur *eclaireur::clone() const {
     return new eclaireur(*this);
 }
 
-unite &eclaireur::asciiArtPrint() {
-    return *this;
+std::string eclaireur::asciiArtPrint() {
+    return "\033[42m\033[30m*\033[0m";
 }
+
+
 

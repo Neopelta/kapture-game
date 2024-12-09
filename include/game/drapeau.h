@@ -12,7 +12,8 @@ namespace kpt {
     public:
         drapeau();
         ~drapeau() override = default;
-        unitObstacle &asciiArtPrint() override;
+
+        std::string asciiArtPrint() override;
         drapeau* clone() const override;
 
     };

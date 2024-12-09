@@ -41,6 +41,7 @@ chairACanon *chairACanon::clone() const {
     return new chairACanon(*this);
 }
 
-unite &chairACanon::asciiArtPrint() {
-    return *this;
+std::string chairACanon::asciiArtPrint() {
+    return "\033[42m\033[30m|\033[0m";
 }
+

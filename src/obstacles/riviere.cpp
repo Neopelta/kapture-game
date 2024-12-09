@@ -6,8 +6,8 @@ riviere::riviere() {
 }
 
 
-obstacle &riviere::asciiArtPrint() {
-    return *this;
+std::string riviere::asciiArtPrint() {
+    return "\033[48;5;38m\033[30m~\033[0m";
 }
 
 riviere * riviere::clone() const {

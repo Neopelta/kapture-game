@@ -31,7 +31,7 @@ namespace kpt {
         unite* clone() const override = 0;
         drapeau* operator*() const;
         unite& operator()();
-        unite& asciiArtPrint() override = 0;
+        std::string asciiArtPrint() override = 0;
     };
 }
 

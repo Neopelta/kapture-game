@@ -14,16 +14,19 @@ namespace kpt {
         static const short unsigned int NUMBER_OF_CANON_FODDER;
         std::vector<unite*> units;
         drapeau flag;
+
         joueur &initializeUnits();
+        joueur();
 
     public:
-        joueur();
         ~joueur();
         joueur(short unsigned int id);
         joueur(const joueur &j);
         joueur& operator=(const joueur &j);
         std::vector<unite*>operator*() const;
         bool operator<(const joueur &j) const;
+        drapeau operator!() const;
+        short unsigned int operator()() const;
     };
 }
 

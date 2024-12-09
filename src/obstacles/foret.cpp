@@ -5,9 +5,8 @@ foret::foret() {
     this->operator()(2);
 }
 
-
-obstacle &foret::asciiArtPrint() {
-    return *this;
+std::string foret::asciiArtPrint() {
+    return "\033[48;5;23m\033[30m#\033[0m";
 }
 
 foret * foret::clone() const {

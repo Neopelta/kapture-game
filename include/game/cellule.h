@@ -1,6 +1,8 @@
 #ifndef CELLULE_H
 #define CELLULE_H
+
 #include <map>
+
 #include <utility>
 
 #include "joueur.h"
@@ -11,7 +13,7 @@ namespace kpt {
     class cellule {
         std::pair<short unsigned int, short unsigned int> coord;
         unitObstacle *entity;
-        std::map<joueur, bool> visible;
+        std::map<short unsigned int, bool> visible;
     public:
         cellule();
         ~cellule();
@@ -20,7 +22,9 @@ namespace kpt {
         cellule(short unsigned int x, short unsigned int y, unitObstacle *uo = nullptr);
         cellule &operator()(unitObstacle &uo);
         std::pair<short unsigned int, short unsigned int> operator*() const;
-        cellule &operator()(joueur &j1, joueur &j2);
+        unitObstacle *operator->() const;
+        bool isVisible(short unsigned int playerId) const;
+        cellule &operator()(short unsigned int playerId);
     };
 }
 

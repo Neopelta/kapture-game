@@ -50,6 +50,8 @@ troupeDeChoc *troupeDeChoc::clone() const {
     return new troupeDeChoc(*this);
 }
 
-unite &troupeDeChoc::asciiArtPrint() {
-    return *this;
+std::string troupeDeChoc::asciiArtPrint() {
+    return "\033[42m\033[30m!\033[0m";
 }
+
+

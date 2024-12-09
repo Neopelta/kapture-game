@@ -1,5 +1,8 @@
 #include "../../include/obstacles//terrainNu.h"
 
+#include <iostream>
+#include <ostream>
+
 using namespace kpt;
 
 terrainNu::terrainNu() {
@@ -7,8 +10,8 @@ terrainNu::terrainNu() {
 }
 
 
-obstacle &terrainNu::asciiArtPrint() {
-    return *this;
+std::string terrainNu::asciiArtPrint() {
+    return "\033[42m\033[30m \033[0m";
 }
 
 terrainNu *terrainNu::clone() const {

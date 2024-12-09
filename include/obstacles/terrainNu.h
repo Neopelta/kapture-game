@@ -8,7 +8,8 @@ namespace kpt {
     public:
         terrainNu();
         ~terrainNu() override = default;
-        obstacle & asciiArtPrint() override;
+
+        std::string asciiArtPrint() override;
         terrainNu* clone() const override;
     };
 }

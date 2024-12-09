@@ -8,7 +8,8 @@ namespace kpt {
     public:
         riviere();
         ~riviere() override = default;
-        obstacle & asciiArtPrint() override;
+
+        std::string asciiArtPrint() override;
         riviere* clone() const override;
     };
 }

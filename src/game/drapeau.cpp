@@ -6,7 +6,7 @@ drapeau::drapeau() : initialPosX(0), initialPosY(0), currentPosX(0), currentPosY
 }
 
 std::string drapeau::asciiArtPrint() {
-    return "\033[42m\033[30mF\033[0m";
+    return "\033[42m\033[30m>\033[0m";
 }
 
 drapeau * drapeau::clone() const {

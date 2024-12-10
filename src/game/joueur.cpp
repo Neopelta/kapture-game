@@ -11,9 +11,7 @@ const short unsigned int joueur::NUMBER_OF_SCOOTS = 2;
 const short unsigned int joueur::NUMBER_OF_SHOCK_TROOPS = 4;
 const short unsigned int joueur::NUMBER_OF_CANON_FODDER = 6;
 
-joueur::joueur() {
-    this->initializeUnits();
-}
+short unsigned int joueur::index = 0;
 
 joueur::~joueur() {
     std::for_each(units.begin(), units.end(), [](unite* u) {
@@ -22,9 +20,9 @@ joueur::~joueur() {
     units.clear();
 }
 
-joueur::joueur(short unsigned int id) {
+joueur::joueur() {
+    id = ++index;
     this->initializeUnits();
-    this->id = id;
 }
 
 joueur::joueur(const joueur &j) {
@@ -59,13 +57,13 @@ joueur & joueur::operator=(const joueur &j) {
 
 joueur &joueur::initializeUnits() {
     for (short unsigned int i = 0; i < NUMBER_OF_SCOOTS; ++i)
-        units.push_back(new eclaireur());
+        units.push_back(new eclaireur);
 
     for (short unsigned int i = 0; i < NUMBER_OF_SHOCK_TROOPS; ++i)
-        units.push_back(new troupeDeChoc());
+        units.push_back(new troupeDeChoc);
 
     for (short unsigned int i = 0; i < NUMBER_OF_CANON_FODDER; ++i)
-        units.push_back(new chairACanon());
+        units.push_back(new chairACanon);
     return *this;
 }
 
@@ -73,14 +71,11 @@ std::vector<unite*> joueur::operator*() const {
     return units;
 }
 
-bool joueur::operator<(const joueur &j) const {
-    return id < j.id;
-}
-
 drapeau joueur::operator!() const {
     return flag;
 }
 
-short unsigned int joueur::operator()() const {
-    return id;
+bool joueur::operator==(const joueur &p) const {
+    return this->id == p.id;
 }
+

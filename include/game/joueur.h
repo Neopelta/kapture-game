@@ -8,25 +8,23 @@
 namespace kpt {
     class unite;
     class joueur {
-        short unsigned int id;
+        static short unsigned int index;
         static const short unsigned int NUMBER_OF_SCOOTS;
         static const short unsigned int NUMBER_OF_SHOCK_TROOPS;
         static const short unsigned int NUMBER_OF_CANON_FODDER;
+        short unsigned int id;
         std::vector<unite*> units;
         drapeau flag;
 
         joueur &initializeUnits();
-        joueur();
-
     public:
         ~joueur();
-        joueur(short unsigned int id);
+        joueur();
         joueur(const joueur &j);
         joueur& operator=(const joueur &j);
         std::vector<unite*>operator*() const;
-        bool operator<(const joueur &j) const;
         drapeau operator!() const;
-        short unsigned int operator()() const;
+        bool operator==(const joueur &p) const;
     };
 }
 

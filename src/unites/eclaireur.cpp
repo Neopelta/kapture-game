@@ -39,7 +39,7 @@ eclaireur *eclaireur::clone() const {
 }
 
 std::string eclaireur::asciiArtPrint() {
-    return "\033[42m\033[30m*\033[0m";
+    return "\033[42m\033[30mE\033[0m";
 }
 
 

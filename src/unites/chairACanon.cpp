@@ -15,9 +15,8 @@ unite & chairACanon::fightWithScoot(eclaireur &s) {
 }
 
 unite & chairACanon::fightWithCannonFodder(chairACanon &cf) {
-    srand(time(nullptr));
-    float rand = std::rand() % 100 + 1;
-    if (rand < 50.0f)
+    const short unsigned int rand = std::rand() % 100 + 1;
+    if (rand < 50)
         std::cout << "Chair à canon vs Chair à canon : le premier gagne" << std::endl;
     else
         std::cout << "Chair à canon vs Chair à canon : le deuxieme gagne" << std::endl;
@@ -42,6 +41,6 @@ chairACanon *chairACanon::clone() const {
 }
 
 std::string chairACanon::asciiArtPrint() {
-    return "\033[42m\033[30m|\033[0m";
+    return "\033[42m\033[30mC\033[0m";
 }
 

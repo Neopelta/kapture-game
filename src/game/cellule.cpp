@@ -35,7 +35,7 @@ cellule &cellule::operator=(const cellule &c) {
     return *this;
 }
 
-cellule::cellule(short unsigned int x, short unsigned int y, unitObstacle *uo): visible() {
+cellule::cellule(short unsigned int x, short unsigned int y, unitObstacle *uo) {
     coord.first = x;
     coord.second = y;
     entity = uo ? uo->clone() : new terrainNu;
@@ -55,23 +55,15 @@ unitObstacle *cellule::operator->() const {
 }
 
 bool cellule::isVisible(joueur &p) const {
-    std::pair<std::multimap<bool, joueur>::const_iterator, std::multimap<bool, joueur>::const_iterator>
-        range = visible.equal_range(true);
-
-    std::multimap<bool, joueur>::const_iterator it = std::find_if(
-        range.first, range.second, [&p](const std::pair<const bool, joueur> &pair) {
-            return pair.second == p;
-        });
-
-    return it != range.second;
+    for (const auto& [key, value] : visible) {
+        if (key == p)
+            return value;
+    }
+    return false;
 }
 
 cellule& cellule::operator()(joueur &p) {
-    std::multimap<bool, joueur>::iterator it = visible.find(false);
-    if (it != visible.end() && it->second == p)
-        visible.erase(it);
-
-    visible.insert({true, p});
+    visible[p] = true;
     return *this;
 }
 
@@ -83,9 +75,14 @@ cellule &cellule::operator=(unitObstacle *uo) {
 
 cellule &cellule::operator()(std::list<joueur> &players) {
     for (joueur &p: players)
-        visible.insert({false, p});
+        visible.insert({p, false});
 
     return *this;
 }
+
+std::map<joueur, bool> cellule::operator!() const {
+    return visible;
+}
+
 
 

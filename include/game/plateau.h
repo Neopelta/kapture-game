@@ -20,6 +20,13 @@ namespace kpt {
         std::vector<cellule> operator*() const {
             return cells;
         }
+
+        plateau<row, col> &operator()(std::list<joueur> &players) {
+            for (cellule &c : cells)
+                c(players);
+
+            return *this;
+        }
     };
 }
 

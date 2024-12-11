@@ -22,9 +22,15 @@ namespace kpt {
         joueur();
         joueur(const joueur &j);
         joueur& operator=(const joueur &j);
-        std::vector<unite*>operator*() const;
+        std::vector<unite*> operator*() const;
         drapeau operator!() const;
         bool operator==(const joueur &p) const;
+        bool operator<(const joueur &p) const {
+            return id < p.id;
+        }
+        short unsigned int operator()() const {
+            return id;
+        }
     };
 }
 

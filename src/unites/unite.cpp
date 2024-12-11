@@ -41,4 +41,3 @@ unite &unite::operator()() {
     flag = nullptr;
     return *this;
 }
-

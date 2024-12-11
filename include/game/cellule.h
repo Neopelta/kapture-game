@@ -13,7 +13,7 @@ namespace kpt {
     class cellule {
         std::pair<short unsigned int, short unsigned int> coord;
         unitObstacle *entity;
-        std::multimap<bool, joueur> visible;
+        std::map<joueur, bool> visible;
     public:
         cellule();
         ~cellule();
@@ -27,6 +27,7 @@ namespace kpt {
         cellule &operator()(joueur &p);
         cellule& operator=(unitObstacle *uo);
         cellule &operator()(std::list<joueur> &players);
+        std::map<joueur, bool> operator!() const;
     };
 }
 

@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <complex>
+#include <fstream>
 #include <list>
 
 #include "plateau.h"
@@ -24,8 +25,8 @@ namespace kpt {
             for (short unsigned int i = 0; i < nbPlayers; ++i)
                 players.emplace_back();
 
-            for (cellule &c: *board)
-                c(players);
+            board(players);
+
         }
 
         static short unsigned int nextPowerOf2(unsigned int n) {
@@ -110,8 +111,39 @@ namespace kpt {
         }
 
         kaptureGame<row, col> &saveGame(const std::string &filename) {
-            throw std::invalid_argument("kaptureGame::saveGame()");
+            std::fstream file(filename);
+
+            for (cellule &c : *board) {
+                file << "coords : (" << (*c).first << "," << (*c).second << ")\n";
+
+                for (const std::pair<joueur, bool> pair : !c) {
+                    joueur key = pair.first;
+                    bool value = pair.second;
+                    file << "playerId: " << key() << "\n";
+                    file << "visible: " << value << "\n";
+
+                    bool unitWritten = true;
+                    for (unite *u : *key) {
+                        if (**u != nullptr)
+                            std::cout << "passs" << std::endl;
+
+                        joueur p = key;
+                        if (u->asciiArtPrint() == c->asciiArtPrint() && c.isVisible(p) && unitWritten) {
+                            file << "units: " << c->asciiArtPrint() << "\n";
+                            file << "in: " << key() << "\n";
+                            unitWritten = false;
+                            drapeau d = !key;
+                        }
+                    }
+                }
+                file << "\n";
+            }
+            file.close();
+            return *this;
         }
+
+
+
 
         static kaptureGame<row, col> loadGame(const std::string &filename) {
             throw std::invalid_argument("kaptureGame::loadGame()");

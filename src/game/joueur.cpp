@@ -1,6 +1,8 @@
 #include "../../include/game/joueur.h"
 
 #include <algorithm>
+#include <iostream>
+#include <ostream>
 
 #include "../../include/units/chairACanon.h"
 #include "../../include/units/eclaireur.h"
@@ -64,6 +66,7 @@ joueur &joueur::initializeUnits() {
 
     for (short unsigned int i = 0; i < NUMBER_OF_CANON_FODDER; ++i)
         units.push_back(new chairACanon);
+
     return *this;
 }
 

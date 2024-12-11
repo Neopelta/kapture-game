@@ -10,6 +10,7 @@ int main() {
     kapture->initializeGame();
     std::cout << *kapture << std::endl;
 
+    kapture->saveGame("data.txt");
     delete kapture;
     return 0;
 }

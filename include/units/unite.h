@@ -3,6 +3,7 @@
 
 #include "../unitObstacle.h"
 
+
 namespace kpt {
     class drapeau;
     class eclaireur;
@@ -21,6 +22,7 @@ namespace kpt {
     public:
         unite();
         ~unite() override = default;
+
         unite(const unite &other);
         unite &operator=(const unite &other);
         virtual unite& fight(unite &u) = 0;

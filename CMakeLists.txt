@@ -45,4 +45,5 @@ add_executable(kapture_tests
 )
 
 target_link_libraries(kapture_tests gtest_main gtest)
+
 add_test(NAME KaptureTests COMMAND kapture_tests)

@@ -4,8 +4,6 @@
 
 namespace kpt {
     class drapeau : public unitObstacle {
-        short unsigned int initialPosX;
-        short unsigned int initialPosY;
         short unsigned int currentPosX;
         short unsigned int currentPosY;
 

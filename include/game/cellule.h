@@ -26,7 +26,7 @@ namespace kpt {
         bool isVisible(joueur &p) const;
         cellule &operator()(joueur &p);
         cellule& operator=(unitObstacle *uo);
-        cellule &operator()(std::list<joueur> &players);
+        cellule &operator()(std::vector<joueur> &players);
         std::map<joueur, bool> operator!() const;
     };
 }

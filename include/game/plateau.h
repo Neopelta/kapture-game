@@ -21,7 +21,7 @@ namespace kpt {
             return cells;
         }
 
-        plateau<row, col> &operator()(std::list<joueur> &players) {
+        plateau<row, col> &operator()(std::vector<joueur> &players) {
             for (cellule &c : cells)
                 c(players);
 

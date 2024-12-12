@@ -1,8 +1,11 @@
 #include "../../include/units/unite.h"
 
+#include <iostream>
+#include <ostream>
+
 using namespace kpt;
 
-unite::unite() : maximalMove(0), initialPosX(0), initialPosY(0), currentPosX(0), currentPosY(0) {
+unite::unite() : maximalMove(0), currentPosX(0), currentPosY(0) {
     flag = nullptr;
 }
 
@@ -40,4 +43,14 @@ drapeau *unite::operator*() const {
 unite &unite::operator()() {
     flag = nullptr;
     return *this;
+}
+
+unite & unite::operator()(short unsigned int x, short unsigned int y) {
+    currentPosX = x;
+    currentPosX = y;
+    return *this;
+}
+
+std::pair<short unsigned int, short unsigned int> unite::operator!() const {
+    return {currentPosX, currentPosY};
 }

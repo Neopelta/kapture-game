@@ -19,14 +19,13 @@ namespace kpt {
         static kaptureGame *instance;
         short unsigned int currentNbTurns;
         plateau<row, col> board;
-        std::list<joueur> players;
+        std::vector<joueur> players;
 
         kaptureGame<row, col>(short unsigned int nbPlayers) : currentNbTurns(0), board() {
             for (short unsigned int i = 0; i < nbPlayers; ++i)
                 players.emplace_back();
 
             board(players);
-
         }
 
         static short unsigned int nextPowerOf2(unsigned int n) {
@@ -90,8 +89,9 @@ namespace kpt {
                     const short unsigned int uniteIndex = newRow * col + newCol;
                     board[uniteIndex] = u;
                     board[uniteIndex](p);
+                    u->operator^({uniteIndex / col, uniteIndex % col});
+                    u->operator&();
                 }
-
                 ++i;
             }
             return *this;
@@ -142,8 +142,26 @@ namespace kpt {
             return *this;
         }
 
+        kaptureGame<row, col>& updateFieldNotVisited(short unsigned int playerIndex) {
+            const std::pair<short, short> spaces[] = {
+                {-1, 0}, {1, 0}, {0, -1}, {0, 1}
+            };
 
+            joueur p = players.at(playerIndex - 1);
 
+            for (unite* u : *p) {
+                std::pair<short unsigned int, short unsigned int> coords = !(*u);
+                for (const std::pair<short, short> &delta: spaces) {
+                    int newX = coords.first + delta.first;
+                    int newY = coords.second + delta.second;
+
+                    if (newX >= 0 && newX < row && newY >= 0 && newY < col)
+                        board[newX * col + newY](p);
+                }
+            }
+
+            return *this;
+        }
 
         static kaptureGame<row, col> loadGame(const std::string &filename) {
             throw std::invalid_argument("kaptureGame::loadGame()");

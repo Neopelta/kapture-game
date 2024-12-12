@@ -1,6 +1,9 @@
 #ifndef UNITE_H
 #define UNITE_H
 
+#include <iostream>
+#include <ostream>
+
 #include "../unitObstacle.h"
 
 
@@ -14,8 +17,6 @@ namespace kpt {
         drapeau *flag;
     protected:
         short unsigned int maximalMove;
-        short unsigned int initialPosX;
-        short unsigned int initialPosY;
         short unsigned int currentPosX;
         short unsigned int currentPosY;
         virtual bool canTakeFlag() = 0;
@@ -34,6 +35,13 @@ namespace kpt {
         drapeau* operator*() const;
         unite& operator()();
         std::string asciiArtPrint() override = 0;
+        unite& operator()(short unsigned int x, short unsigned int y);
+        std::pair<short unsigned int, short unsigned int> operator!() const;
+        unite &operator&() {
+            currentPosX = initialPosX;
+            currentPosY = initialPosY;
+            return *this;
+        }
     };
 }
 

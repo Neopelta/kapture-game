@@ -5,6 +5,7 @@
 #include <ostream>
 
 #include "../../include/obstacles/terrainNu.h"
+#include "../../include/units/unite.h"
 
 using namespace kpt;
 
@@ -38,6 +39,7 @@ cellule &cellule::operator=(const cellule &c) {
 cellule::cellule(short unsigned int x, short unsigned int y, unitObstacle *uo) {
     coord.first = x;
     coord.second = y;
+
     entity = uo ? uo->clone() : new terrainNu;
 }
 
@@ -73,7 +75,7 @@ cellule &cellule::operator=(unitObstacle *uo) {
     return *this;
 }
 
-cellule &cellule::operator()(std::list<joueur> &players) {
+cellule &cellule::operator()(std::vector<joueur> &players) {
     for (joueur &p: players)
         visible.insert({p, false});
 

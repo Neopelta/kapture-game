@@ -97,6 +97,50 @@ namespace kpt {
             return *this;
         }
 
+
+        kaptureGame<row, col> &updateVisionFieldUnit(joueur &p, unite *u, bool isAlreadyVisited) {
+            std::vector<std::pair<short, short>> spaces;
+            if (isAlreadyVisited)
+                spaces = {
+                    {-2, 0}, {0, -2}, {2, 0}, {0, 2},
+                    {-1, -1}, {-1, 0}, {-1, 1},
+                    {0, -1}, {0, 1}, {1, -1}, {1, 0},
+                    {1, 1}
+                };
+            else
+                spaces = {
+                    {-1, 0}, {1, 0}, {0, -1}, {0, 1}
+                };
+
+            std::pair<short unsigned int, short unsigned int> coords = !(*u);
+            for (const std::pair<short, short> &delta: spaces) {
+                const short unsigned newX = coords.first + delta.first;
+                const short unsigned newY = coords.second + delta.second;
+
+                if (newX < row && newY < col)
+                    board[newX * col + newY](p);
+            }
+            return *this;
+        }
+
+        bool operator()(joueur &p, unite *u) {
+            const std::pair<short, short> spaces[] = {
+                {-1, 0}, {1, 0}, {0, -1}, {0, 1}
+            };
+
+            bool isVisible = true;
+            std::pair<short unsigned int, short unsigned int> coords = !(*u);
+            for (const std::pair<short, short> &delta: spaces) {
+                const short unsigned newX = coords.first + delta.first;
+                const short unsigned newY = coords.second + delta.second;
+
+                if (newX < row && newY < col)
+                    isVisible &= board[newX * col + newY].isVisible(p);
+            }
+
+            return isVisible;
+        }
+
     public:
         // Only one instance, this why we don't have the canonical form class
         static kaptureGame<row, col> *getInstance(short unsigned int nbPlayers) {
@@ -142,23 +186,9 @@ namespace kpt {
             return *this;
         }
 
-        kaptureGame<row, col>& updateFieldNotVisited(short unsigned int playerIndex) {
-            const std::pair<short, short> spaces[] = {
-                {-1, 0}, {1, 0}, {0, -1}, {0, 1}
-            };
-
-            joueur p = players.at(playerIndex - 1);
-
-            for (unite* u : *p) {
-                std::pair<short unsigned int, short unsigned int> coords = !(*u);
-                for (const std::pair<short, short> &delta: spaces) {
-                    int newX = coords.first + delta.first;
-                    int newY = coords.second + delta.second;
-
-                    if (newX >= 0 && newX < row && newY >= 0 && newY < col)
-                        board[newX * col + newY](p);
-                }
-            }
+        kaptureGame<row, col> &updateVisionFields(joueur &p) {
+            for (unite* u : *p)
+                updateVisionFieldUnit(p, u, operator()(p, u));
 
             return *this;
         }

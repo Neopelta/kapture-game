@@ -2,6 +2,7 @@
 #define PLATEAU_H
 
 #include "cellule.h"
+#include "../units/unite.h"
 
 namespace kpt {
     template<short unsigned int row, short unsigned int col>

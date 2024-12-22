@@ -3,7 +3,7 @@ project(kapture)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(kapture main.cpp
+set(SRC_FILES
         src/unites/unite.cpp
         include/unitObstacle.h include/units/unite.h
         include/units/eclaireur.h
@@ -31,6 +31,12 @@ add_executable(kapture main.cpp
         src/unitObstacle.cpp
 )
 
+add_library(kapture_lib ${SRC_FILES})
+
+
+add_executable(kapture main.cpp)
+target_link_libraries(kapture PRIVATE kapture_lib)
+
 include(FetchContent)
 FetchContent_Declare(
         googletest
@@ -41,9 +47,9 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(kapture_tests
-        test/test.cpp
+        test/kaptureGameTest.cpp
+        test/kaptureGameTest.h
 )
 
-target_link_libraries(kapture_tests gtest_main gtest)
-
+target_link_libraries(kapture_tests PRIVATE kapture_lib gtest_main gtest)
 add_test(NAME KaptureTests COMMAND kapture_tests)

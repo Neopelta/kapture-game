@@ -201,6 +201,10 @@ namespace kpt {
             return board;
         }
 
+        std::vector<joueur> operator()() const {
+            return players;
+        }
+
         kaptureGame<row, col> &initializeGame() {
             const size_t numberOfUnits = (*players.front()).size(); // each player has the same number of units
             const short unsigned int maximalOfConnexities = 8;

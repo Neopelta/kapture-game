@@ -19,13 +19,13 @@ namespace kpt {
         ~cellule();
         cellule(const cellule &c);
         cellule &operator=(const cellule &c);
-        cellule(short unsigned int x, short unsigned int y, unitObstacle *uo = nullptr);
+        cellule(short unsigned int x, short unsigned int y, const unitObstacle *uo = nullptr);
         cellule &operator()(unitObstacle &uo);
         std::pair<short unsigned int, short unsigned int> operator*() const;
         unitObstacle *operator->() const;
-        bool isVisible(joueur &p) const;
-        cellule &operator()(joueur &p);
-        cellule& operator=(unitObstacle *uo);
+        bool isVisible(const joueur &p) const;
+        cellule &operator()(const joueur &p);
+        cellule& operator=(const unitObstacle *uo);
         cellule &operator()(std::vector<joueur> &players);
         std::map<joueur, bool> operator!() const;
     };

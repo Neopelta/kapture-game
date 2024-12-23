@@ -9,11 +9,12 @@ namespace kpt {
         short unsigned int initialPosY;
     public:
         unitObstacle();
-        static std::string asciiArtPrintNotVisible();
+        virtual std::string asciiArtPrintNotVisible();
         virtual ~unitObstacle() = default;
         virtual std::string asciiArtPrint() = 0;
         virtual unitObstacle* clone() const = 0;
         unitObstacle& operator^(const std::pair<short unsigned int, short unsigned int>& coords);
+        bool operator==(const unitObstacle *uo) const;
     };
 }
 

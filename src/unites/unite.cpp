@@ -30,6 +30,13 @@ unite &unite::operator=(const unite &other) {
     return *this;
 }
 
+std::string unite::asciiArtPrintNotVisible() {
+    if (flag == nullptr)
+        return unitObstacle::asciiArtPrintNotVisible();
+
+    return "\033[48;5;196mX\033[0m";
+}
+
 unite &unite::takeFlag(drapeau &d) {
     if (canTakeFlag())
         flag = &d;
@@ -53,4 +60,10 @@ unite & unite::operator()(short unsigned int x, short unsigned int y) {
 
 std::pair<short unsigned int, short unsigned int> unite::operator!() const {
     return {currentPosX, currentPosY};
+}
+
+unite & unite::operator&() {
+    currentPosX = initialPosX;
+    currentPosY = initialPosY;
+    return *this;
 }

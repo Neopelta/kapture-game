@@ -30,23 +30,27 @@ cellule &cellule::operator=(const cellule &c) {
         coord.first = c.coord.first;
         coord.second = c.coord.second;
         delete entity;
-        entity = c.entity ? c.entity->clone() : nullptr;
+        entity = c.entity ? c.entity->clone() : new terrainNu;
+        entity->operator^(coord);
         visible = c.visible;
     }
     return *this;
 }
 
-cellule::cellule(short unsigned int x, short unsigned int y, unitObstacle *uo) {
+cellule::cellule(short unsigned int x, short unsigned int y, const unitObstacle *uo) {
     coord.first = x;
     coord.second = y;
-
     entity = uo ? uo->clone() : new terrainNu;
+    entity->operator^(coord);
 }
 
 cellule &cellule::operator()(unitObstacle &uo) {
-    entity = &uo;
+    delete entity;
+    entity = uo.clone();
+    entity->operator^(coord);
     return *this;
 }
+
 
 std::pair<short unsigned int, short unsigned int> cellule::operator*() const {
     return coord;
@@ -56,22 +60,31 @@ unitObstacle *cellule::operator->() const {
     return entity;
 }
 
-bool cellule::isVisible(joueur &p) const {
+bool cellule::isVisible(const joueur &p) const {
     for (const auto& [key, value] : visible) {
-        if (key == p)
-            return value;
+        if (!(key == p))
+            continue;
+
+        for (const unite *u: *key) {
+            if (entity->operator==(u))
+                return u->operator*() != nullptr || value;
+        }
+        return value;
     }
     return false;
 }
 
-cellule& cellule::operator()(joueur &p) {
+cellule& cellule::operator()(const joueur &p) {
     visible[p] = true;
     return *this;
 }
 
-
-cellule &cellule::operator=(unitObstacle *uo) {
-    entity = uo->clone();
+cellule &cellule::operator=(const unitObstacle *uo) {
+    if (entity != uo) {
+        delete entity;
+        entity = uo->clone();
+        entity->operator^(coord);
+    }
     return *this;
 }
 

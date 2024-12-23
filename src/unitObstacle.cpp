@@ -14,3 +14,7 @@ unitObstacle &unitObstacle::operator^(const std::pair<short unsigned int, short 
     initialPosY = coords.second;
     return *this;
 }
+
+bool unitObstacle::operator==(const unitObstacle *uo) const {
+    return initialPosX == uo->initialPosX && initialPosY == uo->initialPosY;
+}

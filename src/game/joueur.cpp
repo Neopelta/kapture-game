@@ -82,3 +82,17 @@ bool joueur::operator==(const joueur &p) const {
     return this->id == p.id;
 }
 
+bool joueur::operator<(const joueur &p) const {
+    return id < p.id;
+}
+
+short unsigned int joueur::operator()() const {
+    return id;
+}
+
+joueur & joueur::operator()(const drapeau &f) {
+    flag = f;
+    flag.operator()(!f);
+    return *this;
+}
+

@@ -14,11 +14,11 @@ namespace kpt {
     class troupeDeChoc;
 
     class unite: public unitObstacle {
-        drapeau *flag;
     protected:
         short unsigned int maximalMove;
         short unsigned int currentPosX;
         short unsigned int currentPosY;
+        drapeau *flag;
         virtual bool canTakeFlag() = 0;
     public:
         unite();
@@ -30,6 +30,7 @@ namespace kpt {
         virtual unite &fightWithScoot(eclaireur &s) = 0;
         virtual unite &fightWithCannonFodder(chairACanon &cf) = 0;
         virtual unite &fightWithShockTroop(troupeDeChoc &st) = 0;
+        std::string asciiArtPrintNotVisible() override;
         unite& takeFlag(drapeau &d);
         unite* clone() const override = 0;
         drapeau* operator*() const;
@@ -37,11 +38,7 @@ namespace kpt {
         std::string asciiArtPrint() override = 0;
         unite& operator()(short unsigned int x, short unsigned int y);
         std::pair<short unsigned int, short unsigned int> operator!() const;
-        unite &operator&() {
-            currentPosX = initialPosX;
-            currentPosY = initialPosY;
-            return *this;
-        }
+        unite &operator&();
     };
 }
 

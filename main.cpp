@@ -8,6 +8,7 @@ int main() {
 
     kaptureGame<25, 10>* kapture = kaptureGame<25, 10>::getInstance(2);
     kapture->initializeGame();
+
     std::cout << "\n"
               << " ____  __.              __                        \n"
               << "|    |/ _|____  _______/  |_ __ _________   ____  \n"
@@ -19,7 +20,6 @@ int main() {
 
     std::cout << *kapture << std::endl;
 
-    kapture->saveGame("data.txt");
     delete kapture;
     return 0;
 }

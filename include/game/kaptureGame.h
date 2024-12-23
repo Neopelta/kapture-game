@@ -70,8 +70,11 @@ namespace kpt {
 
         kaptureGame<row, col> &initializeForPlayer(joueur &p, short unsigned int flagIndex, short unsigned int playerIndex) {
             drapeau flag = !p;
-            board[flagIndex] = &flag;
-            board[flagIndex](p);
+            flag.operator()({flagIndex / col, flagIndex % col});
+            flag.operator^({flagIndex / col, flagIndex % col});
+            p.operator()(flag);
+            board[flagIndex]->operator=(&flag);
+            board[flagIndex]->operator()(p);
 
             // generates all offset depending on the number of units
             const std::vector<std::pair<short, short> > offsets = generateOffsets(
@@ -87,10 +90,10 @@ namespace kpt {
 
                 if (newRow >= 0 && newRow < row && newCol >= 0 && newCol < col) {
                     const short unsigned int uniteIndex = newRow * col + newCol;
-                    board[uniteIndex] = u;
-                    board[uniteIndex](p);
                     u->operator^({uniteIndex / col, uniteIndex % col});
                     u->operator&();
+                    board[uniteIndex]->operator=(u);
+                    board[uniteIndex]->operator()(p);
                 }
                 ++i;
             }
@@ -118,7 +121,7 @@ namespace kpt {
                 const short unsigned newY = coords.second + delta.second;
 
                 if (newX < row && newY < col)
-                    board[newX * col + newY](p);
+                    board[newX * col + newY]->operator()(p);
             }
             return *this;
         }
@@ -135,10 +138,25 @@ namespace kpt {
                 const short unsigned newY = coords.second + delta.second;
 
                 if (newX < row && newY < col)
-                    isVisible &= board[newX * col + newY].isVisible(p);
+                    isVisible &= board[newX * col + newY]->isVisible(p);
             }
 
             return isVisible;
+        }
+
+        kaptureGame<row, col>& assignFlag(joueur &player, unite *u) {
+            drapeau d = !player;
+            const std::pair<short unsigned int, short unsigned int> coord = !(*u);
+            const std::pair<short unsigned int, short unsigned int> flagCoord = !d;
+
+            u->takeFlag(d);
+            d.operator()(true);
+
+            board[coord.first * col + coord.second]->operator=(u); // reassignment to avoid copy
+            board[flagCoord.first * col + flagCoord.second]->operator=(&d); // same
+            player.operator()(d); // same
+
+            return *this;
         }
 
     public:
@@ -157,10 +175,10 @@ namespace kpt {
         kaptureGame<row, col> &saveGame(const std::string &filename) {
             std::fstream file(filename);
 
-            for (cellule &c : *board) {
-                file << "coords : (" << (*c).first << "," << (*c).second << ")\n";
+            for (cellule *c : *board) {
+                file << "coords : (" << (**c).first << "," << (**c).second << ")\n";
 
-                for (const std::pair<joueur, bool> pair : !c) {
+                for (const std::pair<joueur, bool> pair : !(*c)) {
                     joueur key = pair.first;
                     bool value = pair.second;
                     file << "playerId: " << key() << "\n";
@@ -171,9 +189,9 @@ namespace kpt {
                         if (**u != nullptr)
                             std::cout << "passs" << std::endl;
 
-                        joueur p = key;
-                        if (u->asciiArtPrint() == c->asciiArtPrint() && c.isVisible(p) && unitWritten) {
-                            file << "units: " << c->asciiArtPrint() << "\n";
+                        const joueur& p = key;
+                        if (u->asciiArtPrint() == c->operator->()->asciiArtPrint() && c->isVisible(p) && unitWritten) {
+                            file << "units: " << c->operator->()->asciiArtPrint() << "\n";
                             file << "in: " << key() << "\n";
                             unitWritten = false;
                             drapeau d = !key;
@@ -235,7 +253,6 @@ namespace kpt {
             return *this;
         }
 
-
         template<short unsigned int X, short unsigned int Y>
         friend std::ostream &operator<<(std::ostream &os, kaptureGame<X, Y> &game);
     };
@@ -250,12 +267,12 @@ namespace kpt {
             short unsigned int ind = 1;
             os << "Affichage du plateau pour le joueur " << i << std::endl;
 
-            std::vector<cellule> cells = *(game.board);
-            std::for_each(cells.begin(), cells.end(), [&ind, &os, &p](const cellule &cell) {
-                if (cell.isVisible(p))
-                    os << cell->asciiArtPrint() << " ";
+            std::vector<cellule*> cells = *(game.board);
+            std::for_each(cells.begin(), cells.end(), [&ind, &os, &p](const cellule *cell) {
+                if (cell->isVisible(p))
+                    os << cell->operator->()->asciiArtPrint() << " ";
                 else
-                    os << unitObstacle::asciiArtPrintNotVisible() << " ";
+                    os << cell->operator->()->asciiArtPrintNotVisible() << " ";
                 if (ind % Y == 0)
                     os << std::endl;
                 ++ind;

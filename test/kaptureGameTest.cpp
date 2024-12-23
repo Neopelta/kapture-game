@@ -33,7 +33,7 @@ TEST_F(kaptureGameTest, testVisionFields) {
 
     game->updateVisionFields(firstPlayer);
 
-    for (cellule &c : ***game) {
+    for (cellule *c : ***game) {
         for (const unite *u : *firstPlayer) {
             std::pair<short unsigned int, short unsigned int> coords = !(*u);
             for (const std::pair<short, short> &delta: spaces) {
@@ -41,9 +41,9 @@ TEST_F(kaptureGameTest, testVisionFields) {
                 const short unsigned newY = coords.second + delta.second;
 
                 if (newX < 10 && newY < 10) {
-                    cellule refCell = game->operator*().operator*().at(newX * 10 + newY);
-                    ASSERT_TRUE(refCell.isVisible(firstPlayer));
-                    ASSERT_FALSE(refCell.isVisible(secondPlayer));
+                    const cellule *refCell = game->operator*().operator*().at(newX * 10 + newY);
+                    ASSERT_TRUE(refCell->isVisible(firstPlayer));
+                    ASSERT_FALSE(refCell->isVisible(secondPlayer));
                 }
             }
         }

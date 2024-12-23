@@ -6,14 +6,17 @@ namespace kpt {
     class drapeau : public unitObstacle {
         short unsigned int currentPosX;
         short unsigned int currentPosY;
-
+        bool hasAWarner;
     public:
         drapeau();
         ~drapeau() override = default;
 
         std::string asciiArtPrint() override;
         drapeau* clone() const override;
-
+        drapeau &operator()(bool assignment);
+        std::pair<short unsigned, short unsigned> operator!() const;
+        drapeau& operator()(const std::pair<short unsigned, short unsigned>& pos);
+        bool operator*() const;
     };
 }
 

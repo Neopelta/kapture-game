@@ -61,9 +61,13 @@ unitObstacle *cellule::operator->() const {
 }
 
 bool cellule::isVisible(const joueur &p) const {
+    if (entity->mustBeVisible())
+        return true;
+
     for (const auto& [key, value] : visible) {
-        if (!(key == p))
+        if (!(key == p)) {
             continue;
+        }
 
         for (const unite *u: *key) {
             if (entity->operator==(u))
@@ -97,6 +101,13 @@ cellule &cellule::operator()(std::vector<joueur> &players) {
 
 std::map<joueur, bool> cellule::operator!() const {
     return visible;
+}
+
+cellule & cellule::operator()() {
+    delete entity;
+    entity = new terrainNu;
+    entity->operator^(coord);
+    return *this;
 }
 
 

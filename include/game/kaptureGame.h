@@ -144,21 +144,6 @@ namespace kpt {
             return isVisible;
         }
 
-        kaptureGame<row, col>& assignFlag(joueur &player, unite *u) {
-            drapeau d = !player;
-            const std::pair<short unsigned int, short unsigned int> coord = !(*u);
-            const std::pair<short unsigned int, short unsigned int> flagCoord = !d;
-
-            u->takeFlag(d);
-            d.operator()(true);
-
-            board[coord.first * col + coord.second]->operator=(u); // reassignment to avoid copy
-            board[flagCoord.first * col + flagCoord.second]->operator=(&d); // same
-            player.operator()(d); // same
-
-            return *this;
-        }
-
     public:
         // Only one instance, this why we don't have the canonical form class
         static kaptureGame<row, col> *getInstance(short unsigned int nbPlayers) {
@@ -249,6 +234,21 @@ namespace kpt {
                 initializeForPlayer(player, flagIndex, playerIndex + 1);
                 ++playerIndex;
             });
+
+            return *this;
+        }
+
+        kaptureGame<row, col>& assignFlag(joueur &player, unite *u) {
+            drapeau d = !player;
+            const std::pair<short unsigned int, short unsigned int> coord = !(*u);
+            const std::pair<short unsigned int, short unsigned int> flagCoord = !d;
+
+            u->takeFlag(d);
+            d.operator()(true);
+
+            board[coord.first * col + coord.second]->operator=(u); // reassignment to avoid copy
+            board[flagCoord.first * col + flagCoord.second]->operator()(); // the cell that contained the flag must be free
+            player.operator()(d); // same
 
             return *this;
         }

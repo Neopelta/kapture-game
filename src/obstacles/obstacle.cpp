@@ -11,3 +11,7 @@ obstacle & obstacle::operator()(short unsigned int value) {
     costToQuit = value;
     return *this;
 }
+
+bool obstacle::mustBeVisible() const {
+    return false; // an obstacle must be visible everytime
+}

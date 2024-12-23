@@ -30,7 +30,7 @@ namespace kpt {
         virtual unite &fightWithScoot(eclaireur &s) = 0;
         virtual unite &fightWithCannonFodder(chairACanon &cf) = 0;
         virtual unite &fightWithShockTroop(troupeDeChoc &st) = 0;
-        std::string asciiArtPrintNotVisible() override;
+        bool mustBeVisible() const override;
         unite& takeFlag(drapeau &d);
         unite* clone() const override = 0;
         drapeau* operator*() const;

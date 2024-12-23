@@ -14,6 +14,7 @@ namespace kpt {
         obstacle &operator()(short unsigned int value);
         std::string asciiArtPrint() override = 0;
         obstacle* clone() const override = 0;
+        bool mustBeVisible() const override;
     };
 }
 

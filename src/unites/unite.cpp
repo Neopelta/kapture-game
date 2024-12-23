@@ -30,11 +30,8 @@ unite &unite::operator=(const unite &other) {
     return *this;
 }
 
-std::string unite::asciiArtPrintNotVisible() {
-    if (flag == nullptr)
-        return unitObstacle::asciiArtPrintNotVisible();
-
-    return "\033[48;5;196mX\033[0m";
+bool unite::mustBeVisible() const {
+    return flag != nullptr;
 }
 
 unite &unite::takeFlag(drapeau &d) {

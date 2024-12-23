@@ -49,3 +49,24 @@ TEST_F(kaptureGameTest, testVisionFields) {
         }
     }
 }
+
+TEST_F(kaptureGameTest, testStolerManagment) {
+    std::vector<joueur> players = game->operator()();
+    joueur &firstPlayer = players.at(0);
+    joueur &secondPlayer = players.at(1);
+
+    drapeau d = !firstPlayer;
+
+    unite *u = firstPlayer.operator*().at(10);
+    const std::pair<short unsigned int, short unsigned int> uniteCoord = !(*u);
+    const cellule *c = game->operator*().operator[](uniteCoord.first * 10 + uniteCoord.second);
+
+    ASSERT_TRUE(c->isVisible(firstPlayer));
+    ASSERT_FALSE(c->isVisible(secondPlayer));
+
+    game->assignFlag(secondPlayer, u);
+
+    for (const joueur &p : players)
+        ASSERT_TRUE(c->isVisible(p));
+
+}

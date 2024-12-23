@@ -17,6 +17,7 @@ namespace kpt {
         std::pair<short unsigned, short unsigned> operator!() const;
         drapeau& operator()(const std::pair<short unsigned, short unsigned>& pos);
         bool operator*() const;
+        bool mustBeVisible() const override;
     };
 }
 

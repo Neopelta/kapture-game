@@ -34,3 +34,7 @@ bool drapeau::operator*() const {
     return hasAWarner;
 }
 
+bool drapeau::mustBeVisible() const {
+    return hasAWarner;
+}
+

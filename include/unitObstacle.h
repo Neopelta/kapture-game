@@ -13,6 +13,7 @@ namespace kpt {
         virtual ~unitObstacle() = default;
         virtual std::string asciiArtPrint() = 0;
         virtual unitObstacle* clone() const = 0;
+        virtual bool mustBeVisible() const = 0;
         unitObstacle& operator^(const std::pair<short unsigned int, short unsigned int>& coords);
         bool operator==(const unitObstacle *uo) const;
     };

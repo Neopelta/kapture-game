@@ -28,6 +28,7 @@ namespace kpt {
         cellule& operator=(const unitObstacle *uo);
         cellule &operator()(std::vector<joueur> &players);
         std::map<joueur, bool> operator!() const;
+        cellule &operator()();
     };
 }
 

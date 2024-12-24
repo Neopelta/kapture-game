@@ -11,17 +11,17 @@ troupeDeChoc::troupeDeChoc() {
     currentPosY = 0;
 }
 
-unite & troupeDeChoc::fightWithScoot(eclaireur &s) {
+unitInteraction troupeDeChoc::fightWithScoot(eclaireur &s) {
     std::cout << "Troupes de choc vs Eclaireur : Eclaireur perd" << std::endl;
-    return *this;
+    return WON;
 }
 
-unite & troupeDeChoc::fightWithCannonFodder(chairACanon &cf) {
+unitInteraction troupeDeChoc::fightWithCannonFodder(chairACanon &cf) {
     std::cout << "Troupes de choc vs Chair à canon : Chair à canon perd" << std::endl;
-    return *this;
+    return WON;
 }
 
-unite & troupeDeChoc::fightWithShockTroop(troupeDeChoc &st) {
+unitInteraction troupeDeChoc::fightWithShockTroop(troupeDeChoc &st) {
     std::cout << "Troupe de choc vs Troupe de choc : Action" << std::endl;
     if (currentPosY > 0 && st.currentPosY > 0) {
         std::cout << "Les deux reculent" << std::endl;
@@ -35,10 +35,10 @@ unite & troupeDeChoc::fightWithShockTroop(troupeDeChoc &st) {
         st.currentPosX = st.initialPosX;
         st.currentPosY = st.initialPosY;
     }
-    return *this;
+    return DRAW;
 }
 
-unite & troupeDeChoc::fight(unite &u) {
+unitInteraction troupeDeChoc::fight(unite &u) {
     return u.fightWithShockTroop(*this);
 }
 

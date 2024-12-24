@@ -8,10 +8,14 @@ namespace kpt {
     public:
         eclaireur();
         ~eclaireur() override = default;
-        unite& fightWithScoot(eclaireur &s) override;
-        unite& fightWithCannonFodder(chairACanon &cf) override;
-        unite& fightWithShockTroop(troupeDeChoc &st) override;
-        unite& fight(unite &u) override;
+
+        unitInteraction fightWithScoot(eclaireur &s) override;
+
+        unitInteraction fightWithCannonFodder(chairACanon &cf) override;
+
+        unitInteraction fightWithShockTroop(troupeDeChoc &st) override;
+
+        unitInteraction fight(unite &u) override;
         bool canTakeFlag() override;
         eclaireur *clone() const override;
 

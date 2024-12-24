@@ -7,11 +7,15 @@ namespace kpt {
     class troupeDeChoc : public unite {
     public:
         troupeDeChoc();
-        unite& fightWithScoot(eclaireur &s) override;
-        unite& fightWithCannonFodder(chairACanon &cf) override;
-        unite& fightWithShockTroop(troupeDeChoc &st) override;
+
+        unitInteraction fightWithScoot(eclaireur &s) override;
+
+        unitInteraction fightWithCannonFodder(chairACanon &cf) override;
+
+        unitInteraction fightWithShockTroop(troupeDeChoc &st) override;
         ~troupeDeChoc() override = default;
-        unite & fight(unite &u) override;
+
+        unitInteraction fight(unite &u) override;
         bool canTakeFlag() override;
         troupeDeChoc* clone() const override;
 

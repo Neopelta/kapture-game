@@ -238,6 +238,30 @@ namespace kpt {
             return *this;
         }
 
+        kaptureGame<row, col> &handleFight(unite *u1, unite *u2) {
+            const std::pair<short unsigned int, short unsigned int> previousU1Coord = !(*u1);
+            const std::pair<short unsigned int, short unsigned int> previousU2Coord = !(*u2);
+
+            const unitInteraction interaction = u1->fight(*u2);
+
+            const std::pair<short unsigned int, short unsigned int> currentU1Coord = !(*u1);
+            const std::pair<short unsigned int, short unsigned int> currentU2Coord = !(*u2);
+
+            if (interaction == WON) {
+                u1->operator&();
+            }
+            else if (interaction == LOST)
+                u2->operator&();
+            else {
+                board[previousU1Coord.first * col + previousU1Coord.second]->operator()();
+                board[previousU2Coord.first * col + previousU2Coord.second]->operator()();
+                board[currentU1Coord.first * col + currentU1Coord.second]->operator=(u1);
+                board[currentU2Coord.first * col + currentU2Coord.second]->operator=(u2);
+            }
+
+            return *this;
+        }
+
         kaptureGame<row, col>& assignFlag(joueur &player, unite *u) {
             drapeau d = !player;
             const std::pair<short unsigned int, short unsigned int> coord = !(*u);

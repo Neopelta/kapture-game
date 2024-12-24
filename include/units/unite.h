@@ -13,6 +13,12 @@ namespace kpt {
     class chairACanon;
     class troupeDeChoc;
 
+    enum unitInteraction {
+        DRAW,
+        WON,
+        LOST,
+    };
+
     class unite: public unitObstacle {
     protected:
         short unsigned int maximalMove;
@@ -26,10 +32,10 @@ namespace kpt {
 
         unite(const unite &other);
         unite &operator=(const unite &other);
-        virtual unite& fight(unite &u) = 0;
-        virtual unite &fightWithScoot(eclaireur &s) = 0;
-        virtual unite &fightWithCannonFodder(chairACanon &cf) = 0;
-        virtual unite &fightWithShockTroop(troupeDeChoc &st) = 0;
+        virtual unitInteraction fight(unite &u) = 0;
+        virtual unitInteraction fightWithScoot(eclaireur &s) = 0;
+        virtual unitInteraction fightWithCannonFodder(chairACanon &cf) = 0;
+        virtual unitInteraction fightWithShockTroop(troupeDeChoc &st) = 0;
         bool mustBeVisible() const override;
         unite& takeFlag(drapeau &d);
         unite* clone() const override = 0;

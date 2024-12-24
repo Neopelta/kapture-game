@@ -11,22 +11,22 @@ eclaireur::eclaireur() {
     currentPosY = 0;
 }
 
-unite& eclaireur::fightWithScoot(eclaireur &s) {
+unitInteraction eclaireur::fightWithScoot(eclaireur &s) {
     std::cout << "Rien ne se passe" << std::endl;
-    return *this;
+    return DRAW;
 }
 
-unite& eclaireur::fightWithCannonFodder(chairACanon &cf) {
+unitInteraction eclaireur::fightWithCannonFodder(chairACanon &cf) {
     std::cout << "Eclaireur vs Chair à canon : Eclaireur perd" << std::endl;
-    return *this;
+    return LOST;
 }
 
-unite& eclaireur::fightWithShockTroop(troupeDeChoc &st) {
+unitInteraction eclaireur::fightWithShockTroop(troupeDeChoc &st) {
     std::cout << "Eclaireur vs Troupe de choc : Eclaireur perd" << std::endl;
-    return *this;
+    return LOST;
 }
 
-unite& eclaireur::fight(unite &u) {
+unitInteraction eclaireur::fight(unite &u) {
     return u.fightWithScoot(*this);
 }
 

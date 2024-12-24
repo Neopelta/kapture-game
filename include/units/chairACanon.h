@@ -6,13 +6,16 @@
 namespace kpt {
     class chairACanon : public unite {
     public:
-
         chairACanon();
         ~chairACanon() override = default;
-        unite& fightWithScoot(eclaireur &s) override;
-        unite& fightWithCannonFodder(chairACanon &cf) override;
-        unite& fightWithShockTroop(troupeDeChoc &st) override;
-        unite& fight(unite &u) override;
+
+        unitInteraction fightWithScoot(eclaireur &s) override;
+
+        unitInteraction fightWithCannonFodder(chairACanon &cf) override;
+
+        unitInteraction fightWithShockTroop(troupeDeChoc &st) override;
+
+        unitInteraction fight(unite &u) override;
         bool canTakeFlag() override;
         chairACanon* clone() const override;
 

@@ -49,6 +49,8 @@ enable_testing()
 add_executable(kapture_tests
         test/kaptureGameTest.cpp
         test/kaptureGameTest.h
+        test/fightTest.cpp
+        test/fightTest.h
 )
 
 target_link_libraries(kapture_tests PRIVATE kapture_lib gtest_main gtest)

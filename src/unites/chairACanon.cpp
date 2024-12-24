@@ -9,26 +9,23 @@ chairACanon::chairACanon() {
     initialPosY = 0;
 }
 
-unite & chairACanon::fightWithScoot(eclaireur &s) {
+unitInteraction chairACanon::fightWithScoot(eclaireur &s) {
     std::cout << "Chair à canon vs Eclaireur : Eclaireur perd" << std::endl;
-    return *this;
+    return WON;
 }
 
-unite & chairACanon::fightWithCannonFodder(chairACanon &cf) {
+unitInteraction chairACanon::fightWithCannonFodder(chairACanon &cf) {
     const short unsigned int rand = std::rand() % 100 + 1;
-    if (rand < 50)
-        std::cout << "Chair à canon vs Chair à canon : le premier gagne" << std::endl;
-    else
-        std::cout << "Chair à canon vs Chair à canon : le deuxieme gagne" << std::endl;
-    return *this;
+    std::cout << "1 chance sur 2" << std::endl;
+    return rand > 50 ? WON : LOST;
 }
 
-unite & chairACanon::fightWithShockTroop(troupeDeChoc &st) {
+unitInteraction chairACanon::fightWithShockTroop(troupeDeChoc &st) {
     std::cout << "Chair à canon vs Troupe de choc : Chair à canon perd" << std::endl;
-    return *this;
+    return LOST;
 }
 
-unite & chairACanon::fight(unite &u) {
+unitInteraction chairACanon::fight(unite &u) {
     return u.fightWithCannonFodder(*this);
 }
 

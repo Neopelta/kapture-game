@@ -10,17 +10,26 @@ chairACanon::chairACanon() {
 }
 
 unitInteraction chairACanon::fightWithScoot(eclaireur &s) {
+    if (flag != nullptr) {
+        std::cout << "L'unité se comporte comme un éclaireur : Rien ne se passe" << std::endl;
+        return DRAW;
+    }
     std::cout << "Chair à canon vs Eclaireur : Eclaireur perd" << std::endl;
     return WON;
 }
 
 unitInteraction chairACanon::fightWithCannonFodder(chairACanon &cf) {
+    if (flag != nullptr) {
+        std::cout << "L'unité se comporte comme un éclaireur : Chair à canon perd" << std::endl;
+        return LOST;
+    }
     const short unsigned int rand = std::rand() % 100 + 1;
     std::cout << "1 chance sur 2" << std::endl;
     return rand > 50 ? WON : LOST;
 }
 
 unitInteraction chairACanon::fightWithShockTroop(troupeDeChoc &st) {
+    // he looses with a flag or not
     std::cout << "Chair à canon vs Troupe de choc : Chair à canon perd" << std::endl;
     return LOST;
 }

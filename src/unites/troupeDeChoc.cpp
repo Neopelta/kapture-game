@@ -12,16 +12,29 @@ troupeDeChoc::troupeDeChoc() {
 }
 
 unitInteraction troupeDeChoc::fightWithScoot(eclaireur &s) {
+    if (flag != nullptr) {
+        std::cout << "L'unité se comporte comme un éclaireur : Rien ne se passe" << std::endl;
+        return DRAW;
+    }
     std::cout << "Troupes de choc vs Eclaireur : Eclaireur perd" << std::endl;
     return WON;
 }
 
 unitInteraction troupeDeChoc::fightWithCannonFodder(chairACanon &cf) {
+    if (flag != nullptr) {
+        std::cout << "L'unité se comporte comme un éclaireur : Troupe de choc perd" << std::endl;
+        return LOST;
+    }
     std::cout << "Troupes de choc vs Chair à canon : Chair à canon perd" << std::endl;
     return WON;
 }
 
 unitInteraction troupeDeChoc::fightWithShockTroop(troupeDeChoc &st) {
+    if (flag != nullptr) {
+        std::cout << "L'unité se comporte comme un éclaireur : Troupe de choc perd" << std::endl;
+        return LOST;
+    }
+
     std::cout << "Troupe de choc vs Troupe de choc : Action" << std::endl;
     if (currentPosY > 0 && st.currentPosY > 0) {
         std::cout << "Les deux reculent" << std::endl;

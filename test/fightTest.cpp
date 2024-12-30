@@ -108,3 +108,56 @@ TEST_F(fightTest, testShockTroopvsShockTroopComeBackInSpawn) {
     delete t2;
 }
 
+TEST_F(fightTest, testCannonFoddervsCannonFodderWithOneStealer) {
+    kaptureGame<10, 10> *game = kaptureGame<10, 10>::getInstance(2);
+
+    joueur &p1 = game->operator()().at(0);
+    chairACanon *c1 = new chairACanon;
+    chairACanon *c2 = new chairACanon;
+
+
+    game->assignFlag(p1, c1);
+
+    ASSERT_EQ(c2->fight(*c1), unitInteraction::LOST);
+    ASSERT_EQ(c1->fight(*c2), unitInteraction::WON);
+
+    delete c1;
+    delete c2;
+    delete game;
+}
+
+TEST_F(fightTest, testShockTroopvsScoutWithOneStealer) {
+    kaptureGame<10, 10> *game = kaptureGame<10, 10>::getInstance(2);
+
+    joueur &p1 = game->operator()().front();
+    troupeDeChoc *t = new troupeDeChoc;
+    eclaireur *e = new eclaireur;
+
+
+    game->assignFlag(p1, t);
+
+    ASSERT_EQ(t->fight(*e), unitInteraction::LOST);
+    ASSERT_EQ(e->fight(*t), unitInteraction::DRAW);
+
+    delete t;
+    delete e;
+    delete game;
+}
+
+TEST_F(fightTest, testShockTroopvsShockTroopWithOneStealer) {
+    kaptureGame<10, 10> *game = kaptureGame<10, 10>::getInstance(2);
+
+    joueur &p1 = game->operator()().front();
+    troupeDeChoc *t1 = new troupeDeChoc;
+    troupeDeChoc *t2 = new troupeDeChoc;
+
+
+    game->assignFlag(p1, t1);
+
+    ASSERT_EQ(t2->fight(*t1), unitInteraction::LOST);
+
+    delete t1;
+    delete t2;
+    delete game;
+}
+

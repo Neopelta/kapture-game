@@ -1,5 +1,8 @@
 #include "../include/unitObstacle.h"
 
+#include <iostream>
+#include <ostream>
+
 using namespace kpt;
 
 unitObstacle::unitObstacle() : initialPosX(0), initialPosY(0) {

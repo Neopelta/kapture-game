@@ -29,6 +29,8 @@ set(SRC_FILES
         include/game/plateau.h
         include/game/kaptureGame.h
         src/unitObstacle.cpp
+        src/uniteObstacleFactory.cpp
+        include/uniteObstacleFactory.h
 )
 
 add_library(kapture_lib ${SRC_FILES})

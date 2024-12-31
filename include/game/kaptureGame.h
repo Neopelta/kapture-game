@@ -9,8 +9,10 @@
 #include "plateau.h"
 #include <stdexcept>
 
+#include "../uniteObstacleFactory.h"
 #include "../obstacles/foret.h"
 #include "../obstacles/riviere.h"
+#include "../obstacles/terrainNu.h"
 #include "../units/eclaireur.h"
 
 namespace kpt {
@@ -196,8 +198,45 @@ namespace kpt {
             return *this;
         }
 
-        static kaptureGame<row, col> loadGame(const std::string &filename) {
-            throw std::invalid_argument("kaptureGame::loadGame()");
+        kaptureGame<row, col>* loadGame(const std::string& filename) {
+            std::ifstream file(filename);
+            if (!file.is_open())
+                throw std::runtime_error("Impossible d'ouvrir le fichier");
+
+            for (joueur &p: players)
+                p.resetUnits();
+
+            std::string line;
+            std::vector<std::string> lines;
+            while (std::getline(file, line) && !line.empty())
+                lines.push_back(line);
+
+            for (short unsigned int i = 0; i < row; ++i) {
+                std::istringstream iss(lines[i]);
+                std::string cell;
+                for (short unsigned int j = 0; j < col; ++j) {
+                    iss >> cell;
+                    unitObstacle* uo = uniteObstacleFactory::createEntity(cell, {i,j});
+
+                    board[i* col + j]->operator=(uo);
+
+                    if (!cell.substr(1, 1).empty()) {
+                        int playerIndex = std::stoi(cell.substr(1, 1)) - 1;
+                        joueur &p = players.at(playerIndex);
+                        if (cell.substr(0, 1) == "D")
+                            p.operator()(*dynamic_cast<drapeau*>(uo));
+                        else
+                            p.insertUnit(dynamic_cast<unite*>(uo));
+                        board[i * col + j]->operator()(p);
+                    }
+
+                }
+            }
+
+            file.close();
+            std::cout << "Le jeu a été chargé : " << filename << std::endl;
+
+            return instance;
         }
 
         plateau<row, col> operator*() const {

@@ -28,6 +28,8 @@ namespace kpt {
         bool operator<(const joueur &p) const;
         short unsigned int operator()() const;
         joueur &operator()(const drapeau &f);
+        joueur &resetUnits();
+        joueur &insertUnit(unite* u);
     };
 }
 

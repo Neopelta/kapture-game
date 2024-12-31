@@ -19,7 +19,10 @@ int main() {
               << "\n";
 
     std::cout << *kapture << std::endl;
-
+/*
+    kaptureGame<8, 8>* kapture = kaptureGame<8, 8>::getInstance(2);
+    kapture->loadGame("../data.txt");
+    std::cout << *kapture << std::endl;*/
     delete kapture;
     return 0;
 }

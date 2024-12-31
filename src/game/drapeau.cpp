@@ -1,5 +1,8 @@
 #include "../../include/game/drapeau.h"
 
+#include <iostream>
+#include <ostream>
+
 using namespace kpt;
 
 drapeau::drapeau(): currentPosX(0), currentPosY(0), hasAWarner(false) {
@@ -33,6 +36,19 @@ drapeau & drapeau::operator()(const std::pair<short unsigned int, short unsigned
 bool drapeau::operator*() const {
     return hasAWarner;
 }
+
+drapeau& drapeau::operator()() {
+    initialPosX = currentPosX;
+    initialPosY = currentPosY;
+    return *this;
+}
+
+drapeau &drapeau::operator!() {
+    currentPosX = initialPosX;
+    currentPosY = initialPosY;
+    return *this;
+}
+
 
 bool drapeau::mustBeVisible() const {
     return hasAWarner;

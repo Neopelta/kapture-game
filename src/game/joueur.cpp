@@ -92,7 +92,16 @@ short unsigned int joueur::operator()() const {
 
 joueur & joueur::operator()(const drapeau &f) {
     flag = f;
-    flag.operator()(!f);
+    return *this;
+}
+
+joueur &joueur::resetUnits() {
+    units.clear();
+    return *this;
+}
+
+joueur &joueur::insertUnit(unite *u) {
+    units.push_back(u);
     return *this;
 }
 

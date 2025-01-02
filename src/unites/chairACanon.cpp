@@ -5,8 +5,8 @@
 using namespace kpt;
 chairACanon::chairACanon() {
     maximalMove = 3;
-    initialPosX = 0;
-    initialPosY = 0;
+    //initialPosX = 0;
+    //initialPosY = 0;
 }
 
 unite & chairACanon::fightWithScoot(eclaireur &s) {

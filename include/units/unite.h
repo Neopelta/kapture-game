@@ -1,8 +1,10 @@
 #ifndef UNITE_H
 #define UNITE_H
 
-#include "../unitObstacle.h"
+#include <iostream>
+#include <ostream>
 
+#include "../unitObstacle.h"
 
 namespace kpt {
     class drapeau;
@@ -25,10 +27,28 @@ namespace kpt {
 
         unite(const unite &other);
         unite &operator=(const unite &other);
+
+        // Nouvelles méthodes pour la gestion des déplacements
+        short unsigned int getMaximalMove() const { return maximalMove; }
+        short unsigned int getCurrentPosX() const { return currentPosX; }
+        short unsigned int getCurrentPosY() const { return currentPosY; }
+
+        void setPosition(short unsigned int x, short unsigned int y) {
+            currentPosX = x;
+            currentPosY = y;
+
+            std::cout << "Nouvelle position : " << x << "," << y << std::endl;
+        }
+
+        void resetPosition() {
+            currentPosX = initialPosX;
+            currentPosY = initialPosY;
+        }
+
         virtual unite& fight(unite &u) = 0;
-        virtual unite &fightWithScoot(eclaireur &s) = 0;
-        virtual unite &fightWithCannonFodder(chairACanon &cf) = 0;
-        virtual unite &fightWithShockTroop(troupeDeChoc &st) = 0;
+        virtual unite& fightWithScoot(eclaireur &s) = 0;
+        virtual unite& fightWithCannonFodder(chairACanon &cf) = 0;
+        virtual unite& fightWithShockTroop(troupeDeChoc &st) = 0;
         unite& takeFlag(drapeau &d);
         unite* clone() const override = 0;
         drapeau* operator*() const;
@@ -36,6 +56,5 @@ namespace kpt {
         std::string asciiArtPrint() override = 0;
     };
 }
-
 
 #endif

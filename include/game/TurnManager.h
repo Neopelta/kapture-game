@@ -47,9 +47,6 @@ namespace kpt {
             int targetIndex = newX * COL + newY;
             unitObstacle* targetCell = board[targetIndex].operator->();
 
-            // On n'utilise pas clone() ici car on ne veut pas créer de nouvelle instance
-            // On vérifie juste le type avec dynamic_cast
-
             // Vérifier si c'est un drapeau
             if (dynamic_cast<drapeau*>(targetCell) != nullptr) {
                 return false;
@@ -208,12 +205,10 @@ namespace kpt {
                 args.push_back(arg);
             }
 
-            // Si c'est la commande end_turn
             if (commandName == "end" || commandName == "fin") {
-                return false;  // Retourne false pour indiquer la fin du tour
+                return false;
             }
 
-            // Si c'est la commande stop
             if (commandName == "stop" || commandName == "s" || commandName == "next") {
                 return nextUnit();  // Continue avec l'unité suivante
             }

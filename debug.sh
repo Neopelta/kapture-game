@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# chmod +x debug.sh
+
 : << 'DOC'
 Instructions pour utiliser GDB :
 

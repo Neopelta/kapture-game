@@ -17,18 +17,15 @@ int main() {
     bool gameRunning = true;
     while (gameRunning) {
         for (joueur& player : kapture->getPlayers()) {
-            // D'abord initialiser le tour du joueur
             std::cout << "\nTour du joueur " << player() << std::endl;
             turnManager.startTurn(player);
 
-            // Ensuite afficher le plateau
             std::cout << *kapture << std::endl;
 
             bool playerTurn = true;
             while (playerTurn) {
                 unite* currentUnit = turnManager.getCurrentUnit();
                 if (!currentUnit) {
-                    // Si plus d'unités disponibles, recommencer avec la première
                     turnManager.startTurn(player);
                     currentUnit = turnManager.getCurrentUnit();
                 }
@@ -56,7 +53,6 @@ int main() {
                         }
                     }
 
-                    // Afficher le plateau après chaque commande
                     std::cout << *kapture << std::endl;
                 } catch (const std::exception& e) {
                     std::cerr << "Erreur : " << e.what() << std::endl;

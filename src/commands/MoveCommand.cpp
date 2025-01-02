@@ -32,12 +32,10 @@ namespace kpt {
     std::optional<std::pair<int, int>> MoveCommand::getDirectionDelta(const std::string& direction) {
         std::string normalizedDirection = direction;
 
-        // Convertir l'alias en direction standard si nécessaire
         if (directionAliases.count(direction)) {
             normalizedDirection = directionAliases.at(direction);
         }
 
-        // Vérifier si la direction est valide
         if (!directionDeltas.count(normalizedDirection)) {
             return std::nullopt;
         }

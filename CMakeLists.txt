@@ -38,6 +38,9 @@ add_executable(kapture main.cpp
         include/game/TurnManager.h
         src/commands/command.cpp
         include/commands/EndTurnCommand.h
+        src/commands/EndTurnCommand.cpp
+        src/commands/MoveCommand.cpp
+        src/commands/stop.cpp
 )
 
 include(FetchContent)

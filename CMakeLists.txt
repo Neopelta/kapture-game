@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.30)
 project(kapture)
 
+set(CMAKE_BUILD_TYPE Debug)
+add_compile_options(-g)
+
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(kapture main.cpp
@@ -29,6 +32,12 @@ add_executable(kapture main.cpp
         include/game/plateau.h
         include/game/kaptureGame.h
         src/unitObstacle.cpp
+        include/commands/command.h
+        include/commands/stop.h
+        include/commands/MoveCommand.h
+        include/game/TurnManager.h
+        src/commands/command.cpp
+        include/commands/EndTurnCommand.h
 )
 
 include(FetchContent)

@@ -6,7 +6,6 @@
 
 #include "../unitObstacle.h"
 
-
 namespace kpt {
     class drapeau;
     class eclaireur;
@@ -32,6 +31,24 @@ namespace kpt {
 
         unite(const unite &other);
         unite &operator=(const unite &other);
+
+        // Nouvelles méthodes pour la gestion des déplacements
+        short unsigned int getMaximalMove() const { return maximalMove; }
+        short unsigned int getCurrentPosX() const { return currentPosX; }
+        short unsigned int getCurrentPosY() const { return currentPosY; }
+
+        void setPosition(short unsigned int x, short unsigned int y) {
+            currentPosX = x;
+            currentPosY = y;
+
+            std::cout << "Nouvelle position : " << x << "," << y << std::endl;
+        }
+
+        void resetPosition() {
+            currentPosX = initialPosX;
+            currentPosY = initialPosY;
+        }
+
         virtual unitInteraction fight(unite &u) = 0;
         virtual unitInteraction fightWithScoot(eclaireur &s) = 0;
         virtual unitInteraction fightWithCannonFodder(chairACanon &cf) = 0;

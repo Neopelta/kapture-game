@@ -17,17 +17,25 @@
 
 namespace kpt {
     template<short unsigned int row, short unsigned int col>
+    class TurnManager;
+
+    template<short unsigned int row, short unsigned int col>
     class kaptureGame {
+        friend class TurnManager<row, col>;
+    private:
         static kaptureGame *instance;
         short unsigned int currentNbTurns;
         plateau<row, col> board;
         std::vector<joueur> players;
+        joueur* activePlayer;
 
-        kaptureGame<row, col>(short unsigned int nbPlayers) : currentNbTurns(0), board() {
+        kaptureGame<row, col>(short unsigned int nbPlayers)
+        : currentNbTurns(0), board(), activePlayer(nullptr) {
             for (short unsigned int i = 0; i < nbPlayers; ++i)
                 players.emplace_back();
 
             board(players);
+
         }
 
         static short unsigned int nextPowerOf2(unsigned int n) {
@@ -97,6 +105,7 @@ namespace kpt {
                     board[uniteIndex]->operator=(u);
                     board[uniteIndex]->operator()(p);
                 }
+
                 ++i;
             }
             return *this;
@@ -160,33 +169,50 @@ namespace kpt {
         }
 
         kaptureGame<row, col> &saveGame(const std::string &filename) {
-            std::fstream file(filename);
+            // Ouvre le fichier en mode écriture (écrase le contenu existant)
+            std::ofstream file(filename);
+            if (!file.is_open()) {
+                throw std::runtime_error("Impossible d'ouvrir le fichier pour la sauvegarde");
+            }
 
-            for (cellule *c : *board) {
-                file << "coords : (" << (**c).first << "," << (**c).second << ")\n";
+            // Sauvegarde les informations générales du jeu
+            file << "NbTours:" << currentNbTurns << "\n";
+            file << "NbJoueurs:" << players.size() << "\n\n";
 
-                for (const std::pair<joueur, bool> pair : !(*c)) {
-                    joueur key = pair.first;
-                    bool value = pair.second;
-                    file << "playerId: " << key() << "\n";
-                    file << "visible: " << value << "\n";
+            // Pour chaque cellule du plateau
+            for (size_t i = 0; i < row * col; ++i) {
+                cellule &c = board[i];
+                file << "Cellule:" << i << "\n";
+                file << "Coords:(" << (*c).first << "," << (*c).second << ")\n";
 
-                    bool unitWritten = true;
-                    for (unite *u : *key) {
-                        if (**u != nullptr)
-                            std::cout << "passs" << std::endl;
+                // Sauvegarde le type de terrain
+                file << "Terrain:" << c->asciiArtPrint() << "\n";
 
-                        const joueur& p = key;
-                        if (u->asciiArtPrint() == c->operator->()->asciiArtPrint() && c->isVisible(p) && unitWritten) {
-                            file << "units: " << c->operator->()->asciiArtPrint() << "\n";
-                            file << "in: " << key() << "\n";
-                            unitWritten = false;
-                            drapeau d = !key;
+                // Pour chaque joueur, sauvegarde la visibilité
+                for (const auto& [player, isVisible] : !c) {
+                    file << "Joueur:" << player() << "\n";
+                    file << "Visible:" << (isVisible ? "1" : "0") << "\n";
+
+                    // Si la cellule est visible pour ce joueur
+                    if (isVisible) {
+                        // Vérifie si une unité du joueur est présente sur cette cellule
+                        for (unite* unit : *player) {
+                            if (unit && unit->asciiArtPrint() == c->asciiArtPrint()) {
+                                file << "Unite:" << unit->asciiArtPrint() << "\n";
+
+                                // Si l'unité porte un drapeau
+                                if (unit->operator*() != nullptr) {
+                                    file << "PorteDrapeau:1\n";
+                                }
+
+                                break;
+                            }
                         }
                     }
                 }
                 file << "\n";
             }
+
             file.close();
             return *this;
         }
@@ -197,6 +223,11 @@ namespace kpt {
 
             return *this;
         }
+        void setActivePlayer(joueur* player) {
+            activePlayer = player;
+        }
+        std::list<joueur>& getPlayers() { return players; }
+        plateau<row, col>& getBoard() { return board; }
 
         kaptureGame<row, col>* loadGame(const std::string& filename) {
             std::ifstream file(filename);
@@ -217,6 +248,7 @@ namespace kpt {
                 for (short unsigned int j = 0; j < col; ++j) {
                     iss >> cell;
                     unitObstacle* uo = uniteObstacleFactory::createEntity(cell, {i,j});
+
 
                     board[i* col + j]->operator=(uo);
 
@@ -325,25 +357,28 @@ namespace kpt {
 
     template<short unsigned int X, short unsigned int Y>
     std::ostream &operator<<(std::ostream &os, kaptureGame<X, Y> &game) {
-        short i = 1;
-        for (joueur &p: game.players) {
-            short unsigned int ind = 1;
-            os << "Affichage du plateau pour le joueur " << i << std::endl;
-
-            std::vector<cellule*> cells = *(game.board);
-            std::for_each(cells.begin(), cells.end(), [&ind, &os, &p](const cellule *cell) {
-                if (cell->isVisible(p))
-                    os << cell->operator->()->asciiArtPrint() << " ";
-                else
-                    os << cell->operator->()->asciiArtPrintNotVisible() << " ";
-                if (ind % Y == 0)
-                    os << std::endl;
-                ++ind;
-            });
-
-            os << std::endl;
-            ++i;
+        if (!game.activePlayer) {
+            os << "Erreur: Aucun joueur actif" << std::endl;
+            return os;
         }
+
+        os << "Affichage du plateau pour le joueur " << game.activePlayer->operator()() << std::endl;
+
+        std::vector<cellule> cells = *(game.board);
+        short unsigned int ind = 1;
+        std::for_each(cells.begin(), cells.end(), [&ind, &os, &activePlayer = game.activePlayer](const cellule &cell) {
+            if (cell.isVisible(*activePlayer)) {
+                os << cell.operator->()->asciiArtPrint() << " ";
+            } else {
+                os << cell.operator->()->unitObstacle::asciiArtPrintNotVisible() << " ";
+            }
+            if (ind % Y == 0) {
+                os << std::endl;
+            }
+            ++ind;
+        });
+
+        os << std::endl;
         return os;
     }
 }

@@ -51,7 +51,7 @@ unite &unite::operator()() {
 
 unite & unite::operator()(short unsigned int x, short unsigned int y) {
     currentPosX = x;
-    currentPosX = y;
+    currentPosY = y;
     return *this;
 }
 

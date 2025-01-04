@@ -23,7 +23,7 @@ drapeau & drapeau::operator()(bool assignment) {
     return *this;
 }
 
-std::pair<short unsigned int, short unsigned int> drapeau::operator!() const {
+std::pair<short unsigned, short unsigned> drapeau::operator!() const {
     return std::make_pair(currentPosX, currentPosY);
 }
 
@@ -43,7 +43,7 @@ drapeau& drapeau::operator()() {
     return *this;
 }
 
-drapeau &drapeau::operator!() {
+drapeau &drapeau::initCurrentCoord() {
     currentPosX = initialPosX;
     currentPosY = initialPosY;
     return *this;

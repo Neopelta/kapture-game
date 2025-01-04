@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <vector>
-#include <map>
 #include <sstream>
 #include "../commands/command.h"
 #include "../commands/MoveCommand.h"
@@ -18,13 +17,11 @@
 namespace kpt {
     template<short unsigned int ROW, short unsigned int COL>
     class TurnManager {
-    private:
         std::vector<std::unique_ptr<command>> commands;
         plateau<ROW, COL>& board;
         kaptureGame<ROW, COL>* game;
         joueur* currentPlayer;
-        std::vector<unite*> currentUnits;  // Stockage des unités du joueur actuel
-        std::vector<unite*>::iterator currentUnit;
+        unite* selectedUnit;
         int remainingMoves;
 
         void registerCommands() {
@@ -33,46 +30,62 @@ namespace kpt {
             commands.push_back(std::make_unique<EndTurnCommand>());
         }
 
+                bool isValidPosition(int x, int y) const {
+            return x >= 0 && x < ROW && y >= 0 && y < COL;
+        }
+
+        bool isOccupiedByFlag(unitObstacle* cell) const {
+            return dynamic_cast<drapeau*>(cell) != nullptr;
+        }
+
+        bool isOccupiedByUnit(unitObstacle* cell) const {
+            return dynamic_cast<unite*>(cell) != nullptr;
+        }
+
+        int calculateMoveCost(unitObstacle* cell, unite* unit) const {
+            obstacle* obs = dynamic_cast<obstacle*>(cell);
+            if (!obs) return 0;
+
+            if (dynamic_cast<riviere*>(cell) != nullptr) {
+                return unit->getMaximalMove();
+            }
+            return **obs;
+        }
+
         bool validateMove(int currentX, int currentY, int dx, int dy) const {
-            // Calculer la nouvelle position
             int newX = currentX + dx;
             int newY = currentY + dy;
 
-            // Vérifier les limites du plateau
-            if (newX < 0 || newX >= ROW || newY < 0 || newY >= COL) {
-                return false;
-            }
+            if (!isValidPosition(newX, newY)) return false;
 
-            // Vérifier la cellule de destination
             int targetIndex = newX * COL + newY;
-            unitObstacle* targetCell = board[targetIndex].operator->();
+            unitObstacle* targetCell = board[targetIndex]->operator->();
 
-            // Vérifier si c'est un drapeau
-            if (dynamic_cast<drapeau*>(targetCell) != nullptr) {
+            if (isOccupiedByFlag(targetCell) || isOccupiedByUnit(targetCell)) {
                 return false;
             }
 
-            // Vérifier si c'est une unité
-            if (dynamic_cast<unite*>(targetCell) != nullptr) {
-                return false;
-            }
+            int cost = calculateMoveCost(targetCell, selectedUnit);
+            return cost <= remainingMoves;
+        }
 
-            // Gérer le coût de déplacement selon le type d'obstacle
-            obstacle* obs = dynamic_cast<obstacle*>(targetCell);
-            if (obs != nullptr) {
-                short unsigned int cost = **obs;
+        bool validatePath(int currentX, int currentY, int dx, int dy, int steps, int& totalCost) {
+            for (int i = 1; i <= steps; ++i) {
+                int checkX = currentX + (dx * i);
+                int checkY = currentY + (dy * i);
 
-                // Si c'est une rivière
-                if (dynamic_cast<riviere*>(targetCell) != nullptr) {
-                    unite* unit = *currentUnit;
-                    if (unit != nullptr) {
-                        cost = unit->getMaximalMove();
-                    }
+                if (!isValidPosition(checkX, checkY)) return false;
+
+                int checkIndex = checkX * COL + checkY;
+                unitObstacle* checkCell = board[checkIndex].operator->();
+
+                int stepCost = calculateMoveCost(checkCell, selectedUnit);
+                totalCost += stepCost;
+
+                if (totalCost > remainingMoves || !validateMove(currentX, currentY, dx * i, dy * i)) {
+                    return false;
                 }
-
-                return cost <= remainingMoves;
             }
-
             return true;
         }
 
@@ -83,7 +96,7 @@ namespace kpt {
 
             try {
                 int steps = std::stoi(args[0]);
-                std::string direction = args[1];
+                const std::string& direction = args[1];
 
                 auto delta = MoveCommand::getDirectionDelta(direction);
                 if (!delta.has_value()) {
@@ -91,16 +104,14 @@ namespace kpt {
                 }
 
                 auto [dx, dy] = delta.value();
-                unite* unit = *currentUnit;
 
-                if (!unit) {
+                if (!selectedUnit) {
                     throw std::runtime_error("Unité invalide");
                 }
 
-                int currentX = unit->getCurrentPosX();
-                int currentY = unit->getCurrentPosY();
+                int currentX = selectedUnit->operator!().first;
+                int currentY = selectedUnit->operator!().second;
 
-                // Calculer le coût total du déplacement
                 int totalCost = 0;
                 for (int i = 1; i <= steps; ++i) {
                     int checkX = currentX + (dx * i);
@@ -111,41 +122,58 @@ namespace kpt {
                     }
 
                     int checkIndex = checkX * COL + checkY;
-                    unitObstacle* checkCell = board[checkIndex].operator->();
+                    std::cout << "CHECK" << checkX << " " << checkY << std::endl;
+                    unitObstacle* checkCell = board[checkIndex]->operator->();
 
                     obstacle* obs = dynamic_cast<obstacle*>(checkCell);
                     if (obs != nullptr) {
                         if (dynamic_cast<riviere*>(checkCell) != nullptr) {
-                            totalCost += unit->getMaximalMove();
-                        } else {
-                            totalCost += **obs;
+                            totalCost += selectedUnit->getMaximalMove();
+
+                        } else
+                            totalCost += obs->operator*();
+
+                        int nextX = checkX + dx;
+                        int nextY = checkY + dy;
+                        std::cout << "next" << nextX << " " << nextY << std::endl;
+
+                        if (!isValidPosition(nextX, nextY)) {
+                            std::cout << "La case suivante est hors limites." << std::endl;
+                            return false;
+                        }
+                        if (dynamic_cast<terrainNu*>(checkCell) == nullptr) {
+                            int nextIndex = nextX * COL + nextY;
+                            unitObstacle* nextCell = board[nextIndex]->operator->();
+
+                            if (dynamic_cast<terrainNu*>(nextCell) == nullptr) {
+                                std::cout << "La case suivante est occupée." << std::endl;
+                                return false;
+                            }
                         }
                     }
 
-                    if (totalCost > remainingMoves) {
+                    std::cout << "COST" << totalCost << std::endl;
+                    if (totalCost > remainingMoves)
                         return false;
-                    }
 
-                    // Vérifier si le chemin est bloqué
-                    if (!validateMove(currentX, currentY, dx * i, dy * i)) {
+                    if (!validateMove(currentX, currentY, dx * i, dy * i))
                         return false;
-                    }
                 }
 
-                // Si on arrive ici, le mouvement est valide
-                // Retirer l'unité de sa position actuelle
-                board[currentX * COL + currentY] = new terrainNu();
+                board[currentX * COL + currentY]->operator()();
 
-                // Mettre à jour la position de l'unité
                 int newX = currentX + (dx * steps);
                 int newY = currentY + (dy * steps);
-                unit->setPosition(newX, newY);
 
-                // Placer l'unité à sa nouvelle position
-                board[newX * COL + newY] = unit;
-                board[newX * COL + newY](*currentPlayer);
+                selectedUnit->operator()(newX, newY);
+
+                board[newX * COL + newY]->operator=(selectedUnit);
+                board[newX * COL + newY]->operator()(*currentPlayer);
 
                 remainingMoves -= totalCost;
+
+                game->updateVisionFields(*currentPlayer, selectedUnit);
+
                 return true;
 
             } catch (const std::exception& e) {
@@ -153,38 +181,36 @@ namespace kpt {
                 return false;
             }
         }
+
     public:
-        TurnManager(kaptureGame<ROW, COL>* g)
-        : board(g->getBoard()), game(g), currentPlayer(nullptr), remainingMoves(0) {
+        explicit TurnManager(kaptureGame<ROW, COL>* g)
+        : board(g->getBoard()), game(g), currentPlayer(nullptr), selectedUnit(nullptr), remainingMoves(0) {
             registerCommands();
         }
 
         void startTurn(joueur& player) {
             currentPlayer = &player;
-            game->setActivePlayer(currentPlayer);  // Met à jour le joueur actif dans le jeu
+            game->setActivePlayer(currentPlayer);
 
             if (!currentPlayer) {
                 throw std::runtime_error("Joueur invalide");
             }
 
-            currentUnits = *player;
-            if (currentUnits.empty()) {
+            auto playerUnits = *player;
+            if (playerUnits.empty())
                 throw std::runtime_error("Pas d'unités disponibles pour le joueur");
-            }
 
-            currentUnit = currentUnits.begin();
-            if (!(*currentUnit)) {
+
+            selectedUnit = playerUnits.front();
+            if (!selectedUnit)
                 throw std::runtime_error("Unité invalide");
-            }
 
-            remainingMoves = (*currentUnit)->getMaximalMove();
+
+            remainingMoves = selectedUnit->getMaximalMove();
         }
 
-        unite* getCurrentUnit() const {
-            if (currentUnit == currentUnits.end() || !(*currentUnit)) {
-                return nullptr;
-            }
-            return *currentUnit;
+        unite* getSelectedUnit() const {
+            return selectedUnit;
         }
 
         bool processCommand(const std::string& input) {
@@ -195,43 +221,39 @@ namespace kpt {
             auto cmdIt = std::find_if(commands.begin(), commands.end(),
                 [&commandName](const auto& cmd) { return cmd->matches(commandName); });
 
-            if (cmdIt == commands.end()) {
+            if (cmdIt == commands.end())
                 return false;
-            }
+
 
             std::vector<std::string> args;
             std::string arg;
-            while (iss >> arg) {
+            while (iss >> arg)
                 args.push_back(arg);
-            }
 
-            if (commandName == "end" || commandName == "fin") {
+
+            if (commandName == "end" || commandName == "fin")
                 return false;
-            }
 
-            if (commandName == "stop" || commandName == "s" || commandName == "next") {
-                return nextUnit();  // Continue avec l'unité suivante
-            }
+
+            if (commandName == "stop" || commandName == "s" || commandName == "next")
+                return nextUnit();
 
             return executeMove(args);
         }
 
         bool nextUnit() {
-            ++currentUnit;
-            if (currentUnit == currentUnits.end()) {
-                return false;
-            }
-
-            if (!(*currentUnit)) {
-                throw std::runtime_error("Unité suivante invalide");
-            }
-
-            remainingMoves = (*currentUnit)->getMaximalMove();
+            selectedUnit = nullptr;
             return true;
         }
 
         int getRemainingMoves() const {
             return remainingMoves;
+        }
+
+        TurnManager<ROW,COL>& selectUnit(unite* unit) {
+            selectedUnit = unit;
+            remainingMoves = selectedUnit ? selectedUnit->getMaximalMove() : 0;
+            return *this;
         }
     };
 }

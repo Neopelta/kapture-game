@@ -1,6 +1,6 @@
 #include <iostream>
 #include "include/game/kaptureGame.h"
-#include "include/game/turnManager.h"
+#include "include/game/TurnManager.h"
 
 using namespace kpt;
 
@@ -8,11 +8,22 @@ int main() {
     srand(static_cast<unsigned int>(time(nullptr)));
 
     // Initialisation du jeu
-    kaptureGame<25, 10>* kapture = kaptureGame<25, 10>::getInstance(2);
-    kapture->initializeGame();
+    kaptureGame<8, 8>* kapture = kaptureGame<8, 8>::getInstance(2);
+    kapture->loadGame("../data.txt");
+
+    std::cout << "\n"
+          << " ____  __.              __                        \n"
+          << "|    |/ _|____  _______/  |_ __ _________   ____  \n"
+          << "|      < \\__  \\ \\____ \\   __\\  |  \\_  __ \\_/ __ \\ \n"
+          << "|    |  \\ / __ \\|  |_> >  | |  |  /|  | \\/\\  ___/ \n"
+          << "|____|__ (____  /   __/|__| |____/ |__|    \\_____\n"
+          << "       \\/    \\/|__|                             \n"
+          << "\n";
+
+
 
     // Création du gestionnaire de tours
-    TurnManager<25, 10> turnManager(kapture);
+    TurnManager<8, 8> turnManager(kapture);
 
     bool gameRunning = true;
     while (gameRunning) {
@@ -23,43 +34,77 @@ int main() {
             std::cout << *kapture << std::endl;
 
             bool playerTurn = true;
+            unite* selectedUnit = nullptr;
+
             while (playerTurn) {
-                unite* currentUnit = turnManager.getCurrentUnit();
-                if (!currentUnit) {
-                    turnManager.startTurn(player);
-                    currentUnit = turnManager.getCurrentUnit();
+                if (!selectedUnit) {
+                    std::cout << "Aucune unité sélectionnée. Entrez 'select <x,y>' pour choisir une unité (par exemple, select 1,1) : ";
+                    std::string selectCommand;
+                    std::getline(std::cin, selectCommand);
+                    if (selectCommand == "end")
+                        break;
+
+                    if (selectCommand.substr(0, 6) == "select") {
+                        std::string coords = selectCommand.substr(7);
+                        size_t commaPos = coords.find(',');
+                        if (commaPos != std::string::npos) {
+                            int x = std::stoi(coords.substr(0, commaPos));
+                            int y = std::stoi(coords.substr(commaPos + 1));
+
+                            selectedUnit = kapture->getUnitAt(x, y);
+                            if (selectedUnit) {
+                                std::cout << "Unité sélectionnée : " << selectedUnit->asciiArtPrint() << std::endl;
+                                turnManager.selectUnit(selectedUnit);
+                            } else {
+                                std::cout << "Aucune unité trouvée aux coordonnées spécifiées." << std::endl;
+                            }
+                        } else {
+                            std::cout << "Coordonnées invalides. Essayez de nouveau." << std::endl;
+                        }
+                    } else {
+                        std::cout << "Commande invalide. Utilisez 'select <x,y>' pour choisir une unité." << std::endl;
+                    }
+                    continue;
                 }
 
-                try {
-                    std::cout << "\nUnité actuelle : " << currentUnit->asciiArtPrint()
+                std::cout << "Unité sélectionnée : " << selectedUnit->asciiArtPrint()
                           << " (" << turnManager.getRemainingMoves() << " mouvements restants)"
-                          << " [" << currentUnit->getCurrentPosX() << "," << currentUnit->getCurrentPosY() << "]"
+                          << " [" << selectedUnit->getCurrentPosX() << "," << selectedUnit->getCurrentPosY() << "]"
                           << std::endl;
 
-                    std::string command;
-                    std::cout << "Entrez une commande (move <steps> <direction>, stop pour unité suivante, end pour finir le tour) : ";
-                    std::getline(std::cin, command);
+                std::string command;
+                std::cout << "Entrez une commande (mv <steps> <direction>, stop pour sélectionner une autre unité, end pour finir le tour) : ";
+                std::getline(std::cin, command);
 
-                    if (command == "quit") {
-                        gameRunning = false;
-                        break;
-                    }
+                if (command == "quit") {
+                    gameRunning = false;
+                    break;
+                }
 
-                    if (!turnManager.processCommand(command)) {
-                        if (command == "end_turn" || command == "end" || command == "et") {
-                            playerTurn = false;  // Fin du tour du joueur
-                        } else if (command != "stop") {
-                            std::cout << "Commande invalide ou mouvement impossible" << std::endl;
-                        }
-                    }
+                bool isChange = false;
 
+                if (command.substr(0, 2) == "mv") {
+                    if (!turnManager.processCommand(command))
+                        std::cout << "Mouvement invalide ou impossible" << std::endl;
+                    else
+                        isChange = true;
+
+                }
+                else if (command == "end_turn" || command == "end" || command == "et")
+                    playerTurn = false;
+                else if (command == "stop" || command == "s" || command == "next")
+                    selectedUnit = nullptr;
+                else
+                    std::cout << "Commande invalide" << std::endl;
+
+                if (isChange) {
+                    kapture->updateVisionFields(player, selectedUnit);
                     std::cout << *kapture << std::endl;
-                } catch (const std::exception& e) {
-                    std::cerr << "Erreur : " << e.what() << std::endl;
                 }
             }
 
-            if (!gameRunning) break;
+            if (!gameRunning)
+                break;
         }
 
         ++(*kapture);

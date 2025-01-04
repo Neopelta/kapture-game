@@ -104,7 +104,6 @@ std::map<joueur, bool> cellule::operator!() const {
 }
 
 cellule & cellule::operator()() {
-    delete entity;
     entity = new terrainNu;
     entity->operator^(coord);
     return *this;

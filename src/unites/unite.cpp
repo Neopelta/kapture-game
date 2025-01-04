@@ -30,6 +30,7 @@ unite &unite::operator=(const unite &other) {
     return *this;
 }
 
+
 bool unite::mustBeVisible() const {
     return flag != nullptr;
 }
@@ -59,7 +60,8 @@ std::pair<short unsigned int, short unsigned int> unite::operator!() const {
     return {currentPosX, currentPosY};
 }
 
-unite & unite::operator&() {
+unite & unite::reset() {
+    std::cout << "IIT" << initialPosX << "," << initialPosY << std::endl;
     currentPosX = initialPosX;
     currentPosY = initialPosY;
     return *this;

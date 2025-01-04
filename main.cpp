@@ -86,8 +86,13 @@ int main() {
                 if (command.substr(0, 2) == "mv") {
                     if (!turnManager.processCommand(command))
                         std::cout << "Mouvement invalide ou impossible" << std::endl;
-                    else
+                    else {
+                        unite *u = kapture->operator()(selectedUnit);
+                        if (u != nullptr) {
+                            kapture->handleFight(u, selectedUnit);
+                        }
                         isChange = true;
+                    }
 
                 }
                 else if (command == "end_turn" || command == "end" || command == "et")

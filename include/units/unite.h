@@ -32,7 +32,6 @@ namespace kpt {
         unite(const unite &other);
         unite &operator=(const unite &other);
 
-        // Nouvelles méthodes pour la gestion des déplacements
         short unsigned int getMaximalMove() const { return maximalMove; }
         short unsigned int getCurrentPosX() const { return currentPosX; }
         short unsigned int getCurrentPosY() const { return currentPosY; }
@@ -61,7 +60,7 @@ namespace kpt {
         std::string asciiArtPrint() override = 0;
         unite& operator()(short unsigned int x, short unsigned int y);
         std::pair<short unsigned int, short unsigned int> operator!() const;
-        unite &operator&();
+        unite &reset();
     };
 }
 

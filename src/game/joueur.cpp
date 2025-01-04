@@ -95,6 +95,14 @@ joueur & joueur::operator()(const drapeau &f) {
     return *this;
 }
 
+bool joueur::operator()(const unite *u) {
+    bool isIncluded = false;
+    std::for_each(units.begin(), units.end(), [&](const unite *unit) {
+        isIncluded |= (*u == unit);
+    });
+    return isIncluded;
+}
+
 joueur &joueur::resetUnits() {
     units.clear();
     return *this;

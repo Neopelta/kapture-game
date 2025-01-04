@@ -87,7 +87,7 @@ cellule &cellule::operator=(const unitObstacle *uo) {
     if (entity != uo) {
         delete entity;
         entity = uo->clone();
-        entity->operator^(coord);
+        entity->operator^(uo->pos());
     }
     return *this;
 }

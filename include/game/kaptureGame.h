@@ -5,6 +5,8 @@
 #include <complex>
 #include <fstream>
 #include <list>
+#include <queue>
+#include <set>
 
 #include "plateau.h"
 #include <stdexcept>
@@ -101,7 +103,7 @@ namespace kpt {
                 if (newRow >= 0 && newRow < row && newCol >= 0 && newCol < col) {
                     const short unsigned int uniteIndex = newRow * col + newCol;
                     u->operator^({uniteIndex / col, uniteIndex % col});
-                    u->operator&();
+                    u->reset();
                     board[uniteIndex]->operator=(u);
                     board[uniteIndex]->operator()(p);
                 }
@@ -156,6 +158,45 @@ namespace kpt {
             return isVisible;
         }
 
+        std::pair<short unsigned int, short unsigned int> findClosestFreeCell(short unsigned int startX, short unsigned int startY) {
+            std::queue<std::pair<short unsigned int, short unsigned int>> q;
+            std::set<std::pair<short unsigned int, short unsigned int>> visited;
+
+            q.emplace(startX, startY);
+            visited.insert({startX, startY});
+
+            std::vector<std::pair<int, int>> directions = {
+                {0, 1}, {1, 0}, {0, -1}, {-1, 0},  // Droite, Bas, Gauche, Haut
+                {1, 1}, {1, -1}, {-1, 1}, {-1, -1} // Diagonales
+            };
+
+            while (!q.empty()) {
+                auto coord = q.front();
+                q.pop();
+
+                short unsigned int x = coord.first;
+                short unsigned int y = coord.second;
+
+                const cellule *currentCell = board[x * col + y];
+                if (dynamic_cast<terrainNu*>(currentCell->operator->()) != nullptr) {
+                    return {x, y};
+                }
+
+                for (const auto& dir : directions) {
+                    short unsigned int newX = x + dir.first;
+                    short unsigned int newY = y + dir.second;
+
+                    if (newX < row && newY < col && visited.find({newX, newY}) == visited.end()) {
+                        q.push({newX, newY});
+                        visited.insert({newX, newY});
+                    }
+                }
+            }
+
+            // Si aucune case libre n'a été trouvée, retourner la position de départ
+            return {startX, startY};
+        }
+
     public:
         // Only one instance, this why we don't have the canonical form class
         static kaptureGame<row, col> *getInstance(short unsigned int nbPlayers) {
@@ -203,7 +244,6 @@ namespace kpt {
                     iss >> cell;
                     unitObstacle* uo = uniteObstacleFactory::createEntity(cell, {i,j});
 
-
                     board[i* col + j]->operator=(uo);
 
                     if (!cell.substr(1, 1).empty()) {
@@ -231,12 +271,7 @@ namespace kpt {
             if (u == nullptr)
                 return nullptr;
 
-            bool isIncluded = false;
-            std::vector<unite*> units = *p;
-            std::for_each(units.begin(), units.end(), [&](const unite *unit) {
-                isIncluded |= (*u == unit);
-            });
-            return isIncluded ? u : nullptr;
+            return p.operator()(u) ? u : nullptr;
         }
 
         plateau<row, col> operator*() const {
@@ -287,10 +322,39 @@ namespace kpt {
             const std::pair<short unsigned int, short unsigned int> currentU2Coord = !(*u2);
 
             if (interaction == WON) {
-                u1->operator&();
+                board[currentU1Coord.first * col + currentU1Coord.second]->operator()();
+                u1->reset();
+
+                const std::pair<short unsigned int, short unsigned int> spawnCoords = !(*u1);
+                short unsigned int spawnX = spawnCoords.first;
+                short unsigned int spawnY = spawnCoords.second;
+
+                const cellule *spawnUnitCell = board[spawnX * col + spawnY];
+                if (dynamic_cast<terrainNu*>(spawnUnitCell->operator->()) == nullptr) {
+                    const std::pair<short unsigned int, short unsigned int> freeCoords = findClosestFreeCell(spawnX, spawnY);
+                    spawnX = freeCoords.first;
+                    spawnY = freeCoords.second;
+                }
+
+                board[spawnX * col + spawnY]->operator=(u1);
             }
-            else if (interaction == LOST)
-                u2->operator&();
+            else if (interaction == LOST) {
+                board[currentU2Coord.first * col + currentU2Coord.second]->operator()();
+                u2->reset();
+
+                const std::pair<short unsigned int, short unsigned int> spawnCoords = !(*u2);
+                short unsigned int spawnX = spawnCoords.first;
+                short unsigned int spawnY = spawnCoords.second;
+
+                const cellule *spawnUnitCell = board[spawnX * col + spawnY];
+                if (dynamic_cast<terrainNu*>(spawnUnitCell->operator->()) == nullptr) {
+                    const std::pair<short unsigned int, short unsigned int> freeCoords = findClosestFreeCell(spawnX, spawnY);
+                    spawnX = freeCoords.first;
+                    spawnY = freeCoords.second;
+                }
+
+                board[spawnX * col + spawnY]->operator=(u2);
+            }
             else {
                 board[previousU1Coord.first * col + previousU1Coord.second]->operator()();
                 board[previousU2Coord.first * col + previousU2Coord.second]->operator()();
@@ -300,6 +364,7 @@ namespace kpt {
 
             return *this;
         }
+
 
         kaptureGame<row, col>& assignFlag(joueur &player, unite *u) {
             drapeau d = !player;
@@ -314,6 +379,35 @@ namespace kpt {
             player.operator()(d); // same
 
             return *this;
+        }
+
+        unite *operator()(unite *u) {
+            const std::pair<short, short> spaces[] = {
+                {-1, -1}, {-1, 0}, {-1, 1},
+                {0, -1}, {0, 1},
+                {1, -1}, {1, 0}, {1, 1},
+            };
+
+            unite *result = nullptr;
+            std::pair<short unsigned int, short unsigned int> coords = !(*u);
+
+            for (const std::pair<short, short> &delta: spaces) {
+                const short unsigned newX = coords.first + delta.first;
+                const short unsigned newY = coords.second + delta.second;
+
+                if (newX < row && newY < col) {
+                    cellule *adjacentCell = board[newX * col + newY];
+                    unite *unit = dynamic_cast<unite*>(adjacentCell->operator->());
+                    if (unit) {
+                        for (joueur &player: players) {
+                            if (player.operator()(u) && !player.operator()(unit))
+                                result = unit;
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
 
         template<short unsigned int X, short unsigned int Y>

@@ -27,7 +27,7 @@ kpt::unitObstacle * kpt::uniteObstacleFactory::createEntity(const std::string &d
     if (data.substr(0, 1) == "D") {
         drapeau *flag = new drapeau;
         flag->operator^(pos);
-        flag->operator!();
+        flag->operator()();
         return flag;
     }
 
@@ -40,6 +40,6 @@ kpt::unitObstacle * kpt::uniteObstacleFactory::createEntity(const std::string &d
         unit = new troupeDeChoc;
 
     unit->operator^(pos);
-    unit->operator&();
+    unit->reset();
     return unit;
 }

@@ -225,9 +225,18 @@ namespace kpt {
             return instance;
         }
 
-        unite* getUnitAt(int x, int y) {
-            cellule *cell = board[x * col + y];
-            return dynamic_cast<unite*>(cell->operator->());
+        unite* getUnitAt(joueur &p, const std::pair<short unsigned int, short unsigned int> &coords) {
+            cellule *cell = board[coords.first * col + coords.second];
+            unite *u = dynamic_cast<unite*>(cell->operator->());
+            if (u == nullptr)
+                return nullptr;
+
+            bool isIncluded = false;
+            std::vector<unite*> units = *p;
+            std::for_each(units.begin(), units.end(), [&](const unite *unit) {
+                isIncluded |= (*u == unit);
+            });
+            return isIncluded ? u : nullptr;
         }
 
         plateau<row, col> operator*() const {

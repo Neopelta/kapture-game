@@ -51,19 +51,19 @@ int main() {
                             int x = std::stoi(coords.substr(0, commaPos));
                             int y = std::stoi(coords.substr(commaPos + 1));
 
-                            selectedUnit = kapture->getUnitAt(x, y);
+                            selectedUnit = kapture->getUnitAt(player, {x, y});
                             if (selectedUnit) {
                                 std::cout << "Unité sélectionnée : " << selectedUnit->asciiArtPrint() << std::endl;
                                 turnManager.selectUnit(selectedUnit);
-                            } else {
+                            } else
                                 std::cout << "Aucune unité trouvée aux coordonnées spécifiées." << std::endl;
-                            }
-                        } else {
+
+                        } else
                             std::cout << "Coordonnées invalides. Essayez de nouveau." << std::endl;
-                        }
-                    } else {
+
+                    } else
                         std::cout << "Commande invalide. Utilisez 'select <x,y>' pour choisir une unité." << std::endl;
-                    }
+
                     continue;
                 }
 

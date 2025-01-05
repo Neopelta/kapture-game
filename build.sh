@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# chmod +x build.sh
+
 # Si le dossier build n'existe pas ou ne contient pas de CMakeCache.txt
 if [ ! -d "build" ] || [ ! -f "build/CMakeCache.txt" ]; then
     # Vérifie les prérequis

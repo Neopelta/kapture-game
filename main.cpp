@@ -38,9 +38,16 @@ int main() {
 
             while (playerTurn) {
                 if (!selectedUnit) {
-                    std::cout << "Aucune unité sélectionnée. Entrez 'select <x,y>' pour choisir une unité (par exemple, select 1,1) : ";
+                    std::cout << "Aucune unité sélectionnée. Entrez 'select <x,y>' pour choisir une unité (par exemple, select 1,1) ou 'quit' pour quitter : ";
                     std::string selectCommand;
                     std::getline(std::cin, selectCommand);
+
+                    if (selectCommand == "quit") {
+                        gameRunning = false;
+                        playerTurn = false;
+                        break;
+                    }
+
                     if (selectCommand == "end")
                         break;
 
@@ -73,11 +80,12 @@ int main() {
                           << std::endl;
 
                 std::string command;
-                std::cout << "Entrez une commande (mv <steps> <direction>, stop pour sélectionner une autre unité, end pour finir le tour) : ";
+                std::cout << "Entrez une commande (mv <steps> <direction>, stop pour sélectionner une autre unité, end pour finir le tour, quit pour quitter) : ";
                 std::getline(std::cin, command);
 
                 if (command == "quit") {
                     gameRunning = false;
+                    playerTurn = false;
                     break;
                 }
 
@@ -93,9 +101,8 @@ int main() {
                         }
                         isChange = true;
                     }
-
                 }
-                else if (command == "end" || command == "fin")
+                else if (command == "end_turn" || command == "end" || command == "et")
                     playerTurn = false;
                 else if (command == "stop" || command == "s" || command == "next")
                     selectedUnit = nullptr;
@@ -114,7 +121,6 @@ int main() {
 
         ++(*kapture);
     }
-
     try {
         kapture->saveGame("data.txt");
     } catch (const std::exception& e) {

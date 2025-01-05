@@ -95,7 +95,7 @@ int main() {
                     }
 
                 }
-                else if (command == "end_turn" || command == "end" || command == "et")
+                else if (command == "end" || command == "fin")
                     playerTurn = false;
                 else if (command == "stop" || command == "s" || command == "next")
                     selectedUnit = nullptr;

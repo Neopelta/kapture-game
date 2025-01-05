@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <sstream>
+#include <map>
 #include "../commands/command.h"
 #include "../commands/MoveCommand.h"
 #include "../commands/stop.h"
@@ -23,6 +24,8 @@ namespace kpt {
         joueur* currentPlayer;
         unite* selectedUnit;
         int remainingMoves;
+        std::map<unite*, int> unitMovesRemaining;
+        std::map<std::pair<int, int>, int> usedMoves;
 
         void registerCommands() {
             commands.push_back(std::make_unique<MoveCommand>());
@@ -30,7 +33,7 @@ namespace kpt {
             commands.push_back(std::make_unique<EndTurnCommand>());
         }
 
-                bool isValidPosition(int x, int y) const {
+        bool isValidPosition(int x, int y) const {
             return x >= 0 && x < ROW && y >= 0 && y < COL;
         }
 
@@ -171,6 +174,8 @@ namespace kpt {
                 board[newX * COL + newY]->operator()(*currentPlayer);
 
                 remainingMoves -= totalCost;
+                std::pair<int, int> newPos = {newX, newY};
+                usedMoves[newPos] = remainingMoves;
 
                 game->updateVisionFields(*currentPlayer, selectedUnit);
 
@@ -179,6 +184,15 @@ namespace kpt {
             } catch (const std::exception& e) {
                 std::cerr << "Erreur lors de l'exécution du mouvement : " << e.what() << std::endl;
                 return false;
+            }
+        }
+
+        void resetUnitMoves() {
+            unitMovesRemaining.clear();
+            std::vector<unite*> units = currentPlayer->operator*();
+            for (std::vector<unite*>::iterator it = units.begin(); it != units.end(); ++it) {
+                unite* unit = *it;
+                unitMovesRemaining[unit] = unit->getMaximalMove();
             }
         }
 
@@ -200,13 +214,9 @@ namespace kpt {
             if (playerUnits.empty())
                 throw std::runtime_error("Pas d'unités disponibles pour le joueur");
 
-
-            selectedUnit = playerUnits.front();
-            if (!selectedUnit)
-                throw std::runtime_error("Unité invalide");
-
-
-            remainingMoves = selectedUnit->getMaximalMove();
+            usedMoves.clear();
+            selectedUnit = nullptr;
+            remainingMoves = 0;
         }
 
         unite* getSelectedUnit() const {
@@ -252,7 +262,16 @@ namespace kpt {
 
         TurnManager<ROW,COL>& selectUnit(unite* unit) {
             selectedUnit = unit;
-            remainingMoves = selectedUnit ? selectedUnit->getMaximalMove() : 0;
+            if (selectedUnit) {
+                std::pair<int, int> pos = {selectedUnit->getCurrentPosX(), selectedUnit->getCurrentPosY()};
+
+                if (usedMoves.find(pos) == usedMoves.end()) {
+                    remainingMoves = selectedUnit->getMaximalMove();
+                    usedMoves[pos] = remainingMoves;
+                } else {
+                    remainingMoves = usedMoves[pos];
+                }
+            }
             return *this;
         }
     };

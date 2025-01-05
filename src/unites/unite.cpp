@@ -60,6 +60,12 @@ std::pair<short unsigned int, short unsigned int> unite::operator!() const {
     return {currentPosX, currentPosY};
 }
 
+unite& unite::operator&() {
+    currentPosX = initialPosX;
+    currentPosY = initialPosY;
+    return *this;
+}
+
 unite & unite::reset() {
     std::cout << "IIT" << initialPosX << "," << initialPosY << std::endl;
     currentPosX = initialPosX;

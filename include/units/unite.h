@@ -60,6 +60,7 @@ namespace kpt {
         std::string asciiArtPrint() override = 0;
         unite& operator()(short unsigned int x, short unsigned int y);
         std::pair<short unsigned int, short unsigned int> operator!() const;
+        unite& operator&();
         unite &reset();
     };
 }

@@ -31,7 +31,9 @@ TEST_F(kaptureGameTest, testVisionFields) {
         {-1, 0}, {1, 0}, {0, -1}, {0, 1}
     };
 
-    game->updateVisionFields(firstPlayer);
+    for (unite* unit : *firstPlayer) {
+        game->updateVisionFields(firstPlayer, unit);
+    }
 
     for (cellule *c : ***game) {
         for (const unite *u : *firstPlayer) {

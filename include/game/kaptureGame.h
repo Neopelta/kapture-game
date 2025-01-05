@@ -355,6 +355,8 @@ namespace kpt {
                     const std::pair<short unsigned int, short unsigned int> freeCoords = findClosestFreeCell(spawnX, spawnY);
                     spawnX = freeCoords.first;
                     spawnY = freeCoords.second;
+
+                    u2->operator()(spawnX, spawnY);
                 }
 
                 board[spawnX * col + spawnY]->operator=(u2);

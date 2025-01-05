@@ -120,7 +120,7 @@ namespace kpt {
                     int checkX = currentX + (dx * i);
                     int checkY = currentY + (dy * i);
 
-                    if (checkX < 0 || checkX >= ROW || checkY < 0 || checkY >= COL) {
+                    if (!isValidPosition(checkX, checkY)) {
                         return false;
                     }
 
@@ -133,18 +133,16 @@ namespace kpt {
                         if (dynamic_cast<riviere*>(checkCell) != nullptr) {
                             totalCost += selectedUnit->getMaximalMove();
 
-                        } else
-                            totalCost += obs->operator*();
+                            // On ne vérifie la case suivante que si on est sur une rivière
+                            int nextX = checkX + dx;
+                            int nextY = checkY + dy;
+                            std::cout << "next" << nextX << " " << nextY << std::endl;
 
-                        int nextX = checkX + dx;
-                        int nextY = checkY + dy;
-                        std::cout << "next" << nextX << " " << nextY << std::endl;
+                            if (!isValidPosition(nextX, nextY)) {
+                                std::cout << "La case suivante est hors limites." << std::endl;
+                                return false;
+                            }
 
-                        if (!isValidPosition(nextX, nextY)) {
-                            std::cout << "La case suivante est hors limites." << std::endl;
-                            return false;
-                        }
-                        if (dynamic_cast<terrainNu*>(checkCell) == nullptr) {
                             int nextIndex = nextX * COL + nextY;
                             unitObstacle* nextCell = board[nextIndex]->operator->();
 
@@ -152,15 +150,19 @@ namespace kpt {
                                 std::cout << "La case suivante est occupée." << std::endl;
                                 return false;
                             }
+                        } else {
+                            totalCost += obs->operator*();
                         }
                     }
 
                     std::cout << "COST" << totalCost << std::endl;
-                    if (totalCost > remainingMoves)
+                    if (totalCost > remainingMoves) {
                         return false;
+                    }
 
-                    if (!validateMove(currentX, currentY, dx * i, dy * i))
+                    if (!validateMove(currentX, currentY, dx * i, dy * i)) {
                         return false;
+                    }
                 }
 
                 board[currentX * COL + currentY]->operator()();
@@ -174,8 +176,6 @@ namespace kpt {
                 board[newX * COL + newY]->operator()(*currentPlayer);
 
                 remainingMoves -= totalCost;
-                std::pair<int, int> newPos = {newX, newY};
-                usedMoves[newPos] = remainingMoves;
 
                 game->updateVisionFields(*currentPlayer, selectedUnit);
 
@@ -186,7 +186,6 @@ namespace kpt {
                 return false;
             }
         }
-
         void resetUnitMoves() {
             unitMovesRemaining.clear();
             std::vector<unite*> units = currentPlayer->operator*();

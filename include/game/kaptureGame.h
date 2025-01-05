@@ -266,6 +266,10 @@ namespace kpt {
         }
 
         unite* getUnitAt(joueur &p, const std::pair<short unsigned int, short unsigned int> &coords) {
+            if (!plateau<row, col>::isValidPosition(coords.first, coords.second)) {
+                return nullptr;
+            }
+
             cellule *cell = board[coords.first * col + coords.second];
             unite *u = dynamic_cast<unite*>(cell->operator->());
             if (u == nullptr)

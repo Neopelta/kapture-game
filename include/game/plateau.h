@@ -15,7 +15,15 @@ namespace kpt {
         }
 
         cellule *operator[](short unsigned int index) const {
+            if (index >= row * col) {
+                throw std::out_of_range("Coordonnées hors limites du plateau");
+            }
+
             return cells.at(index);
+        }
+
+        static bool isValidPosition(short unsigned int x, short unsigned int y) {
+            return x < row && y < col;
         }
 
         std::vector<cellule*> operator*() const {

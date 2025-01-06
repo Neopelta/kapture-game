@@ -1,7 +1,3 @@
-//
-// Created by maxime on 22/12/24.
-//
-
 #include "kaptureGameTest.h"
 
 using namespace kpt;

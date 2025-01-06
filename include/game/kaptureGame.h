@@ -7,10 +7,10 @@
 #include <list>
 #include <queue>
 #include <set>
-
-#include "plateau.h"
+#include <random>
 #include <stdexcept>
 
+#include "plateau.h"
 #include "../uniteObstacleFactory.h"
 #include "../obstacles/foret.h"
 #include "../obstacles/riviere.h"
@@ -193,8 +193,110 @@ namespace kpt {
                 }
             }
 
-            // Si aucune case libre n'a été trouvée, retourner la position de départ
             return {startX, startY};
+        }
+        std::pair<short unsigned int, short unsigned int> findRandomAdjacentFreeCell(short unsigned int startX, short unsigned int startY) {
+            std::vector<std::pair<short unsigned int, short unsigned int>> freeCells;
+
+            // Définir toutes les directions possibles (8 connexités)
+            std::vector<std::pair<int, int>> directions = {
+                {-1, -1}, {-1, 0}, {-1, 1},
+                {0, -1},           {0, 1},
+                {1, -1},  {1, 0},  {1, 1}
+            };
+
+            // Mélanger les directions avec std::shuffle au lieu de random_shuffle
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::shuffle(directions.begin(), directions.end(), gen);
+
+            // Vérifier chaque direction
+            for (const auto& dir : directions) {
+                short unsigned int newX = startX + dir.first;
+                short unsigned int newY = startY + dir.second;
+
+                // Vérifier si la position est valide
+                if (newX < row && newY < col) {
+                    const cellule* currentCell = board[newX * col + newY];
+                    // Vérifier si la case est libre (terrain nu)
+                    if (dynamic_cast<terrainNu*>(currentCell->operator->()) != nullptr) {
+                        freeCells.push_back({newX, newY});
+                    }
+                }
+            }
+
+            // S'il y a des cases libres, en choisir une au hasard
+            if (!freeCells.empty()) {
+                int randomIndex = rand() % freeCells.size();
+                return freeCells[randomIndex];
+            }
+
+            // Si aucune case n'est libre, utiliser findClosestFreeCell comme fallback
+            return findClosestFreeCell(startX, startY);
+        }
+
+        void checkFlags() {
+            for (joueur& player : players) {
+                drapeau flag = !player;
+                if (flag.isOnGround() && flag.shouldReturnToBase(currentNbTurns)) {
+                    flag.initCurrentCoord();
+                    player(flag);
+                    std::cout << "\033[1;35m" << "Le drapeau du joueur " << player()
+                              << " est retourné à sa base !" << "\033[0m" << std::endl;
+                }
+            }
+        }
+
+        void handleFlagDrop(const unite* unit) {
+            if (unit->operator*() != nullptr) {
+                drapeau* flag = unit->operator*();
+                if (flag != nullptr) {
+                    flag->drop(currentNbTurns);  // Utilisation directe, pas de copie
+                }
+                if (flag != nullptr) {
+                    flag->drop(currentNbTurns);  // OK, seulement si flag n'est pas nul
+                } else {
+                    std::cerr << "[ERROR] Tentative d'accès à un drapeau null dans handleFlagDrop" << std::endl;
+                }
+                // Trouve une position aléatoire adjacente libre
+                std::pair<short unsigned int, short unsigned int> unitPos = !(*unit);
+                auto dropPos = findRandomAdjacentFreeCell(unitPos.first, unitPos.second);
+
+                // Place le drapeau sur la nouvelle cellule
+                flag->operator()(dropPos);
+                board[dropPos.first * col + dropPos.second]->operator=(flag);
+
+                std::cout << "\033[1;33m" << "Le drapeau a été lâché ! Il est tombé en position ["
+                          << dropPos.first << "," << dropPos.second << "]" << std::endl
+                          << "Il retournera à sa base dans 2 tours s'il n'est pas récupéré."
+                          << "\033[0m" << std::endl;
+            }
+        }
+
+        bool canCaptureFlag(const unite* unit, const drapeau* flag) const {
+            std::pair<short unsigned int, short unsigned int> unitPos = !(*unit);
+            std::pair<short unsigned int, short unsigned int> flagPos = !(*flag);
+
+            std::cout << "DEBUG - Vérification capture drapeau:" << std::endl;
+            std::cout << "Position unité: [" << unitPos.first << "," << unitPos.second << "]" << std::endl;
+            std::cout << "Position drapeau: [" << flagPos.first << "," << flagPos.second << "]" << std::endl;
+
+            return (std::abs(static_cast<int>(unitPos.first) - static_cast<int>(flagPos.first)) <= 1) &&
+                   (std::abs(static_cast<int>(unitPos.second) - static_cast<int>(flagPos.second)) <= 1) &&
+                   flag->canBePickedUpBy(unit);
+        }
+
+        bool isInitialFlagPosition(int x, int y) const {
+            for (const joueur& player : players) {
+                const drapeau flag = !player;
+                const auto initialPos = flag.pos();  // Position initiale/de base du drapeau
+
+                // On affiche la croix si c'est une position initiale de drapeau
+                if (initialPos.first == x && initialPos.second == y) {
+                    return true;
+                }
+            }
+            return false;
         }
 
     public:
@@ -207,6 +309,7 @@ namespace kpt {
 
         kaptureGame<row, col> &operator++() {
             ++currentNbTurns;
+            checkFlags();
             return *this;
         }
 
@@ -228,12 +331,17 @@ namespace kpt {
             std::ifstream file(filename);
             if (!file.is_open())
                 throw std::runtime_error("Impossible d'ouvrir le fichier");
-
             for (joueur &p: players)
                 p.resetUnits();
 
             std::string line;
             std::vector<std::string> lines;
+
+            std::cout << "Chargement de la carte :" << std::endl;
+            for (const auto& line : lines) {
+                std::cout << line << std::endl;
+            }
+
             while (std::getline(file, line) && !line.empty())
                 lines.push_back(line);
 
@@ -272,10 +380,9 @@ namespace kpt {
 
             cellule *cell = board[coords.first * col + coords.second];
             unite *u = dynamic_cast<unite*>(cell->operator->());
-            if (u == nullptr)
-                return nullptr;
+            if (!u) return nullptr;
 
-            return p.operator()(u) ? u : nullptr;
+            return p.operator()(u) ? u : nullptr;  // Retourne l'unité directement sans copie
         }
 
         plateau<row, col> operator*() const {
@@ -326,6 +433,7 @@ namespace kpt {
             const std::pair<short unsigned int, short unsigned int> currentU2Coord = !(*u2);
 
             if (interaction == WON) {
+                handleFlagDrop(u2);
                 board[currentU1Coord.first * col + currentU1Coord.second]->operator()();
                 u1->reset();
 
@@ -343,6 +451,7 @@ namespace kpt {
                 board[spawnX * col + spawnY]->operator=(u1);
             }
             else if (interaction == LOST) {
+                handleFlagDrop(u1);
                 board[currentU2Coord.first * col + currentU2Coord.second]->operator()();
                 u2->reset();
 
@@ -371,18 +480,36 @@ namespace kpt {
             return *this;
         }
 
-
         kaptureGame<row, col>& assignFlag(joueur &player, unite *u) {
-            drapeau d = !player;
+            std::cout << "[DEBUG] assignFlag - Début, l'unité porte-t-elle déjà un drapeau ? "
+                      << (u->operator*() ? "OUI" : "NON") << std::endl;
+
+            drapeau& d = player.getFlag();
             const std::pair<short unsigned int, short unsigned int> coord = !(*u);
             const std::pair<short unsigned int, short unsigned int> flagCoord = !d;
 
-            u->takeFlag(d);
-            d.operator()(true);
+            // Ajout de l'affichage des adresses pour s'assurer qu'on parle du même drapeau
+            std::cout << "[DEBUG] Adresse du drapeau dans le joueur : " << &d << std::endl;
+            std::cout << "[DEBUG] Adresse du drapeau dans l'unité avant : " << u->operator*() << std::endl;
 
-            board[coord.first * col + coord.second]->operator=(u); // reassignment to avoid copy
-            board[flagCoord.first * col + flagCoord.second]->operator()(); // the cell that contained the flag must be free
-            player.operator()(d); // same
+            u->takeFlag(d);  // Essai de prise du drapeau
+
+            // Vérification après assignation
+            std::cout << "[DEBUG] Adresse du drapeau dans l'unité après : " << u->operator*() << std::endl;
+            std::cout << "[DEBUG] L'unité porte-t-elle un drapeau après ? : "
+                      << (u->operator*() ? "OUI" : "NON") << std::endl;
+
+            // Activation explicite du drapeau capturé
+            d.operator()(true);  // Met hasAWarner à true
+            std::cout << "[DEBUG] hasAWarner (flag) : " << (d.operator*() ? "OUI" : "NON") << std::endl;
+
+            // Mise à jour du plateau
+            board[coord.first * col + coord.second]->operator=(u);
+            board[flagCoord.first * col + flagCoord.second]->operator()();
+            player.operator()(d);
+
+            std::cout << "\033[1;35m" << "Le drapeau du joueur " << player()
+                      << " a été capturé par une unité adverse !" << "\033[0m" << std::endl;
 
             return *this;
         }
@@ -404,6 +531,7 @@ namespace kpt {
                 if (newX < row && newY < col) {
                     cellule *adjacentCell = board[newX * col + newY];
                     unite *unit = dynamic_cast<unite*>(adjacentCell->operator->());
+
                     if (unit) {
                         for (joueur &player: players) {
                             if (player.operator()(u) && !player.operator()(unit))
@@ -414,6 +542,36 @@ namespace kpt {
             }
 
             return result;
+        }
+
+        bool checkVictoryCondition(const joueur& player) const {
+            std::cout << "\n=== [DEBUG-MEMORY] Vérification de la condition de victoire ===" << std::endl;
+
+            // 1. Position de base du joueur
+            const drapeau& playerFlag = !player;
+            auto basePos = playerFlag.pos();
+            std::cout << "[DEBUG-MEMORY] Position de la base du joueur " << player() << ": ["
+                      << basePos.first << ", " << basePos.second << "]" << std::endl;
+
+            // Vérifier chaque unité
+            const std::vector<unite*>& playerUnits = *player;
+            for (unite* unit : playerUnits) {
+                std::cout << "[DEBUG-MEMORY] Adresse de l'unité : " << (void*)unit
+                          << " Position: [" << unit->getCurrentPosX() << ","
+                          << unit->getCurrentPosY() << "]"
+                          << " Porte drapeau: " << (unit->operator*() ? "OUI" : "NON") << std::endl;
+
+                auto unitPos = !(*unit);
+                if (unit->operator*() != nullptr) {
+                    if (unitPos.first == basePos.first && unitPos.second == basePos.second) {
+                        std::cout << "\033[1;32m[VICTOIRE] L'unité avec le drapeau est sur sa base !\033[0m" << std::endl;
+                        return true;
+                    }
+                }
+            }
+
+            std::cout << "[DEBUG-MEMORY] Aucune condition de victoire remplie." << std::endl;
+            return false;
         }
 
         template<short unsigned int X, short unsigned int Y>
@@ -434,17 +592,28 @@ namespace kpt {
 
         std::vector<cellule*> cells = *(game.board);
         short unsigned int ind = 1;
-        std::for_each(cells.begin(), cells.end(), [&ind, &os, &activePlayer = game.activePlayer](const cellule *cell) {
-            if (cell->isVisible(*activePlayer)) {
-                os << cell->operator->()->asciiArtPrint() << " ";
-            } else {
-                os << cell->operator->()->unitObstacle::asciiArtPrintNotVisible() << " ";
-            }
-            if (ind % Y == 0) {
-                os << std::endl;
-            }
-            ++ind;
-        });
+        std::for_each(cells.begin(), cells.end(),
+            [&ind, &os, &game, &activePlayer = game.activePlayer](const cellule *cell) {
+                int x = (ind - 1) / Y;
+                int y = (ind - 1) % Y;
+
+                if (cell->isVisible(*activePlayer)) {
+                    // Ajout de la vérification pour le drapeau
+                    bool isFlag = dynamic_cast<const drapeau*>(cell->operator->()) != nullptr;
+                    if (game.isInitialFlagPosition(x, y) && !isFlag) {
+                        os << "\033[48;5;124mX\033[0m "; // Marque la position initiale uniquement si pas de drapeau
+                    } else {
+                        os << cell->operator->()->asciiArtPrint() << " ";
+                    }
+                } else {
+                    os << cell->operator->()->unitObstacle::asciiArtPrintNotVisible() << " ";
+                }
+
+                if (ind % Y == 0) {
+                    os << std::endl;
+                }
+                ++ind;
+            });
 
         os << std::endl;
         return os;

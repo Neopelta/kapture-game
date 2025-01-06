@@ -48,8 +48,10 @@ int main() {
                         break;
                     }
 
-                    if (selectCommand == "end")
-                        break;
+                    if (selectCommand == "end") {
+                        playerTurn = false;
+                        continue;
+                    }
 
                     if (selectCommand.substr(0, 6) == "select") {
                         std::string coords = selectCommand.substr(7);
@@ -100,6 +102,16 @@ int main() {
                             kapture->handleFight(u, selectedUnit);
                         }
                         isChange = true;
+
+                        if (kapture->checkVictoryCondition(player)) {
+                            std::cout << "\033[1;32mLe joueur " << player() << " a gagné en atteignant son drapeau avec le drapeau ennemi!\033[0m" << std::endl;
+                            gameRunning = false;
+                            playerTurn = false;
+                            break;
+                        } else {
+                            std::cout << "Condition de victoire non remplie." << std::endl;
+                        }
+
                     }
                 }
                 else if (command == "end_turn" || command == "end" || command == "et")

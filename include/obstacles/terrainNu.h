@@ -9,7 +9,7 @@ namespace kpt {
         terrainNu();
         ~terrainNu() override = default;
 
-        std::string asciiArtPrint() override;
+        std::string asciiArtPrint() const override;
         terrainNu* clone() const override;
     };
 }

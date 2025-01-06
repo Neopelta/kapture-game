@@ -9,7 +9,7 @@ namespace kpt {
         riviere();
         ~riviere() override = default;
 
-        std::string asciiArtPrint() override;
+        std::string asciiArtPrint() const override;
         riviere* clone() const override;
     };
 }

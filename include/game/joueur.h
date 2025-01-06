@@ -22,8 +22,8 @@ namespace kpt {
         joueur();
         joueur(const joueur &j);
         joueur& operator=(const joueur &j);
-        std::vector<unite*> operator*() const;
-        drapeau operator!() const;
+        const std::vector<unite*>& operator*() const;
+        const drapeau& operator!() const;
         bool operator==(const joueur &p) const;
         bool operator<(const joueur &p) const;
         short unsigned int operator()() const;
@@ -31,6 +31,8 @@ namespace kpt {
         bool operator()(const unite *u);
         joueur &resetUnits();
         joueur &insertUnit(unite* u);
+        drapeau& getFlag() { return flag; }
+        const drapeau& getFlag() const { return flag; };
     };
 }
 

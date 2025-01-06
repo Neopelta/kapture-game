@@ -9,7 +9,7 @@ namespace kpt {
         foret();
         ~foret() override = default;
 
-        std::string asciiArtPrint() override;
+        std::string asciiArtPrint() const override;
         foret* clone() const override;
     };
 }

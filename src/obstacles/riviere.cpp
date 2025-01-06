@@ -6,7 +6,7 @@ riviere::riviere() {
 }
 
 
-std::string riviere::asciiArtPrint() {
+std::string riviere::asciiArtPrint() const {
     return "\033[48;5;38m\033[30m~\033[0m";
 }
 

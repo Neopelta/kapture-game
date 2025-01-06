@@ -19,12 +19,20 @@ unitInteraction chairACanon::fightWithScoot(eclaireur &s) {
 }
 
 unitInteraction chairACanon::fightWithCannonFodder(chairACanon &cf) {
+    if (flag != nullptr && cf.flag != nullptr) {
+        std::cout << "Les deux unités portent un drapeau et se comportent comme des éclaireurs : match nul" << std::endl;
+        return DRAW;
+    }
     if (flag != nullptr) {
-        std::cout << "L'unité se comporte comme un éclaireur : Chair à canon perd" << std::endl;
+        std::cout << "L'unité courante se comporte comme un éclaireur car elle porte le drapeau : elle perd" << std::endl;
         return LOST;
     }
+    if (cf.flag != nullptr) {
+        std::cout << "L'unité adverse se comporte comme un éclaireur car elle porte le drapeau : elle perd" << std::endl;
+        return WON;
+    }
     const short unsigned int rand = std::rand() % 100 + 1;
-    std::cout << "1 chance sur 2" << std::endl;
+    std::cout << "Aucune unité ne porte de drapeau : 1 chance sur 2" << std::endl;
     return rand > 50 ? WON : LOST;
 }
 
@@ -46,9 +54,9 @@ chairACanon *chairACanon::clone() const {
     return new chairACanon(*this);
 }
 
-std::string chairACanon::asciiArtPrint() {
+std::string chairACanon::asciiArtPrint() const {
     if (flag == nullptr)
         return "\033[42m\033[30mC\033[0m";
-    return "\033[48;5;196mX\033[0m";
+    return "\033[45m\033[30mC\033[0m";
 }
 

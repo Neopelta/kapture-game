@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <ostream>
-
 #include "../unitObstacle.h"
 
 namespace kpt {
@@ -23,7 +22,7 @@ namespace kpt {
         short unsigned int maximalMove;
         short unsigned int currentPosX;
         short unsigned int currentPosY;
-        drapeau *flag;
+        drapeau* flag;  // Pointeur au lieu d'une copie directe
         virtual bool canTakeFlag() = 0;
     public:
         unite();
@@ -37,15 +36,11 @@ namespace kpt {
         short unsigned int getCurrentPosY() const { return currentPosY; }
 
         void setPosition(short unsigned int x, short unsigned int y) {
+            std::cout << "[DEBUG-UNITE] Changement de position : ["
+                          << currentPosX << "," << currentPosY
+                          << "] -> [" << x << "," << y << "]" << std::endl;
             currentPosX = x;
             currentPosY = y;
-
-            std::cout << "Nouvelle position : " << x << "," << y << std::endl;
-        }
-
-        void resetPosition() {
-            currentPosX = initialPosX;
-            currentPosY = initialPosY;
         }
 
         virtual unitInteraction fight(unite &u) = 0;
@@ -57,13 +52,11 @@ namespace kpt {
         unite* clone() const override = 0;
         drapeau* operator*() const;
         unite& operator()();
-        std::string asciiArtPrint() override = 0;
         unite& operator()(short unsigned int x, short unsigned int y);
         std::pair<short unsigned int, short unsigned int> operator!() const;
         unite& operator&();
         unite &reset();
     };
 }
-
 
 #endif

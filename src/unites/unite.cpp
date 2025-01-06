@@ -1,4 +1,5 @@
 #include "../../include/units/unite.h"
+#include "../../include/game/drapeau.h"
 
 #include <iostream>
 #include <ostream>
@@ -10,15 +11,19 @@ unite::unite() : maximalMove(0), currentPosX(0), currentPosY(0) {
 }
 
 unite::unite(const unite &other) {
+    std::cout << "[DEBUG-UNITE] Appel au constructeur de copie" << std::endl;
     maximalMove = other.maximalMove;
     initialPosX = other.initialPosX;
     initialPosY = other.initialPosY;
     currentPosX = other.currentPosX;
     currentPosY = other.currentPosY;
     flag = other.flag;
+    std::cout << "[DEBUG-UNITE] Position après copie: ["
+              << currentPosX << "," << currentPosY << "]" << std::endl;
 }
 
 unite &unite::operator=(const unite &other) {
+    std::cout << "[DEBUG-UNITE] Appel à l'opérateur d'assignation" << std::endl;
     if (this != &other) {
         maximalMove = other.maximalMove;
         initialPosX = other.initialPosX;
@@ -35,9 +40,15 @@ bool unite::mustBeVisible() const {
     return flag != nullptr;
 }
 
-unite &unite::takeFlag(drapeau &d) {
-    if (canTakeFlag())
+unite& unite::takeFlag(drapeau &d) {
+    std::cout << "[DEBUG] Appel à takeFlag - flag avant : "
+              << flag << (flag ? " (non null)" : " (null)") << std::endl;
+    if (canTakeFlag()) {
         flag = &d;
+        flag->operator()(true);
+    }
+    std::cout << "[DEBUG] flag après : "
+              << flag << (flag ? " (non null)" : " (null)") << std::endl;
     return *this;
 }
 
@@ -46,6 +57,7 @@ drapeau *unite::operator*() const {
 }
 
 unite &unite::operator()() {
+    std::cout << "[DEBUG] Appel à operator() - flag réinitialisé à nullptr" << std::endl;
     flag = nullptr;
     return *this;
 }
@@ -67,8 +79,9 @@ unite& unite::operator&() {
 }
 
 unite & unite::reset() {
-    std::cout << "IIT" << initialPosX << "," << initialPosY << std::endl;
-    currentPosX = initialPosX;
+    std::cout << "[DEBUG-UNITE] Appel à reset() - Ancienne position: "
+                  << currentPosX << "," << currentPosY
+                  << " -> Nouvelle position: " << initialPosX << "," << initialPosY << std::endl;    currentPosX = initialPosX;
     currentPosY = initialPosY;
     return *this;
 }

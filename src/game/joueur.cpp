@@ -70,11 +70,11 @@ joueur &joueur::initializeUnits() {
     return *this;
 }
 
-std::vector<unite*> joueur::operator*() const {
+const std::vector<unite*>& joueur::operator*() const {
     return units;
 }
 
-drapeau joueur::operator!() const {
+const drapeau& joueur::operator!() const {
     return flag;
 }
 

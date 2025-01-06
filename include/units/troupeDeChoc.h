@@ -19,7 +19,7 @@ namespace kpt {
         bool canTakeFlag() override;
         troupeDeChoc* clone() const override;
 
-        std::string asciiArtPrint() override;
+        std::string asciiArtPrint() const override;
     };
 }
 

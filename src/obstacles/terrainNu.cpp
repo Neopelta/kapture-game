@@ -10,7 +10,7 @@ terrainNu::terrainNu() {
 }
 
 
-std::string terrainNu::asciiArtPrint() {
+std::string terrainNu::asciiArtPrint() const {
     return "\033[42m\033[30m \033[0m";
 }
 

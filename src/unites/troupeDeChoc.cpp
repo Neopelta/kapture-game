@@ -63,10 +63,10 @@ troupeDeChoc *troupeDeChoc::clone() const {
     return new troupeDeChoc(*this);
 }
 
-std::string troupeDeChoc::asciiArtPrint() {
+std::string troupeDeChoc::asciiArtPrint() const {
     if (flag == nullptr)
         return "\033[42m\033[30mT\033[0m";
-    return "\033[48;5;196mX\033[0m";
+    return "\033[45m\033[30mT\033[0m";
 }
 
 

@@ -8,7 +8,7 @@ using namespace kpt;
 unitObstacle::unitObstacle() : initialPosX(0), initialPosY(0) {
 }
 
-std::string unitObstacle::asciiArtPrintNotVisible() {
+std::string unitObstacle::asciiArtPrintNotVisible() const {
     return "\033[48;5;235m \033[0m";
 }
 

@@ -9,7 +9,7 @@ int main() {
 
     // Initialisation du jeu
     kaptureGame<8, 8>* kapture = kaptureGame<8, 8>::getInstance(2);
-    kapture->loadGame("../data.txt");
+    kapture->loadGame("data.txt");
 
     std::cout << "\n"
           << " ____  __.              __                        \n"
@@ -38,7 +38,7 @@ int main() {
 
             while (playerTurn) {
                 if (!selectedUnit) {
-                    std::cout << "Aucune unité sélectionnée. Entrez 'select <x,y>' pour choisir une unité (par exemple, select 1,1) ou 'quit' pour quitter : ";
+                    std::cout << "Aucune unité sélectionnée. Entrez 'select <y,x>' pour choisir une unité (par exemple, select 1,1) ou 'quit' pour quitter : ";
                     std::string selectCommand;
                     std::getline(std::cin, selectCommand);
 
@@ -71,7 +71,7 @@ int main() {
                             std::cout << "Coordonnées invalides. Essayez de nouveau." << std::endl;
 
                     } else
-                        std::cout << "Commande invalide. Utilisez 'select <x,y>' pour choisir une unité." << std::endl;
+                        std::cout << "Commande invalide. Utilisez 'select <y,x>' pour choisir une unité." << std::endl;
 
                     continue;
                 }

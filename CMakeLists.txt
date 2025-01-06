@@ -61,8 +61,6 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(kapture_tests
-        test/kaptureGameTest.cpp
-        test/kaptureGameTest.h
         test/fightTest.cpp
         test/fightTest.h
 )

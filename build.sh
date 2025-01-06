@@ -2,9 +2,7 @@
 
 # chmod +x build.sh
 
-# Si le dossier build n'existe pas ou ne contient pas de CMakeCache.txt
 if [ ! -d "build" ] || [ ! -f "build/CMakeCache.txt" ]; then
-    # Vérifie les prérequis
     if ! command -v cmake &> /dev/null; then
         echo "Error: CMake n'est pas installé. Version minimum requise: 3.30"
         echo "Veuillez installer CMake avant de continuer."
@@ -17,16 +15,13 @@ if [ ! -d "build" ] || [ ! -f "build/CMakeCache.txt" ]; then
         exit 1
     fi
 
-    # Configuration initiale
     mkdir -p build
     cd build
     cmake ..
 else
-    # Si build existe déjà, on y va directement
     cd build
 fi
 
-# Compile et exécute
 if make; then
     ./kapture
 else

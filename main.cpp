@@ -62,7 +62,6 @@ int main() {
 
                             selectedUnit = kapture->getUnitAt(player, {x, y});
                             if (selectedUnit) {
-                                std::cout << "Unité sélectionnée : " << selectedUnit->asciiArtPrint() << std::endl;
                                 turnManager.selectUnit(selectedUnit);
                             } else
                                 std::cout << "Aucune unité trouvée aux coordonnées spécifiées." << std::endl;

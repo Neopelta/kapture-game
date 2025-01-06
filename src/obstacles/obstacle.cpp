@@ -13,5 +13,5 @@ obstacle & obstacle::operator()(short unsigned int value) {
 }
 
 bool obstacle::mustBeVisible() const {
-    return false; // an obstacle must be visible everytime
+    return false;
 }

@@ -39,8 +39,7 @@ kpt::unitObstacle* kpt::uniteObstacleFactory::createEntity(const std::string &da
     else
         unit = new troupeDeChoc;
 
-    // On initialise une seule fois l'unité
     unit->operator^(pos);
     unit->reset();
-    return unit;  // Retourne l'unité originale
+    return unit;
 }

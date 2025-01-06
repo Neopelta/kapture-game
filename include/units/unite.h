@@ -1,8 +1,6 @@
 #ifndef UNITE_H
 #define UNITE_H
 
-#include <iostream>
-#include <ostream>
 #include "../unitObstacle.h"
 
 namespace kpt {
@@ -22,7 +20,7 @@ namespace kpt {
         short unsigned int maximalMove;
         short unsigned int currentPosX;
         short unsigned int currentPosY;
-        drapeau* flag;  // Pointeur au lieu d'une copie directe
+        drapeau* flag;
         virtual bool canTakeFlag() = 0;
         virtual unite* clone() const = 0;
     public:
@@ -37,9 +35,6 @@ namespace kpt {
         short unsigned int getCurrentPosY() const { return currentPosY; }
 
         void setPosition(short unsigned int x, short unsigned int y) {
-            std::cout << "[DEBUG-UNITE] Changement de position : ["
-                          << currentPosX << "," << currentPosY
-                          << "] -> [" << x << "," << y << "]" << std::endl;
             currentPosX = x;
             currentPosY = y;
         }

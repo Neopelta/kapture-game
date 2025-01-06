@@ -5,10 +5,6 @@
 using namespace kpt;
 troupeDeChoc::troupeDeChoc() {
     maximalMove = 2;
-    //initialPosX = 0;
-    //initialPosY = 0;
-    //currentPosX = 0;
-    //currentPosY = 0;
 }
 
 unitInteraction troupeDeChoc::fightWithScoot(eclaireur &s) {

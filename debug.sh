@@ -27,34 +27,28 @@ display currentX                  # Affiche automatiquement X à chaque arrêt
 display currentY                  # Affiche automatiquement Y à chaque arrêt
 DOC
 
-# Vérifie si cmake est installé
 if ! command -v cmake &> /dev/null; then
     echo "Error: CMake n'est pas installé."
     exit 1
 fi
 
-# Vérifie si gdb est installé
 if ! command -v gdb &> /dev/null; then
     echo "Error: GDB n'est pas installé. Installez-le avec : sudo apt-get install gdb"
     exit 1
 fi
 
-# Crée et configure le build en mode Debug
 echo "Configuration du build en mode Debug..."
 mkdir -p build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Debug ..
 
-# Compile le projet
 echo "Compilation du projet..."
 make -j
 
-# Vérifie si la compilation a réussi
 if [ $? -ne 0 ]; then
     echo "Erreur lors de la compilation"
     exit 1
 fi
 
-# Lance GDB
 echo "Lancement de GDB..."
 gdb --quiet ./kapture

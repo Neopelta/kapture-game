@@ -97,6 +97,8 @@ Structure du Projet
 - include/ : Fichiers d'en-tête
 - test/ : Tests unitaires
 
+- data.txt : Terrain de jeu
+
 5. Fonctionnalités Implémentées
 
 - [x] Implémentation des commandes pour sélectionner une unité et la déplacer (Ronan)

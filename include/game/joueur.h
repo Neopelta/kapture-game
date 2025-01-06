@@ -12,10 +12,10 @@ namespace kpt {
         static const short unsigned int NUMBER_OF_SHOCK_TROOPS;
         static const short unsigned int NUMBER_OF_CANON_FODDER;
         short unsigned int id;
-        std::vector<unite*> units;  // Stocke les pointeurs vers les unités du plateau
+        std::vector<unite*> units;
         drapeau flag;
 
-        joueur &initializeUnits();  // Gardé pour compatibilité mais non utilisé
+        joueur &initializeUnits();
     public:
         ~joueur();
         joueur();

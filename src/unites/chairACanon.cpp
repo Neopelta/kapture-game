@@ -5,8 +5,6 @@
 using namespace kpt;
 chairACanon::chairACanon() {
     maximalMove = 3;
-    //initialPosX = 0;
-    //initialPosY = 0;
 }
 
 unitInteraction chairACanon::fightWithScoot(eclaireur &s) {
@@ -37,7 +35,6 @@ unitInteraction chairACanon::fightWithCannonFodder(chairACanon &cf) {
 }
 
 unitInteraction chairACanon::fightWithShockTroop(troupeDeChoc &st) {
-    // he looses with a flag or not
     std::cout << "Chair à canon vs Troupe de choc : Chair à canon perd" << std::endl;
     return LOST;
 }

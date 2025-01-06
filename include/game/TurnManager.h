@@ -64,16 +64,11 @@ namespace kpt {
             int targetIndex = newX * COL + newY;
             unitObstacle* targetCell = board[targetIndex]->operator->();
 
-            // Vérification spéciale pour la position initiale du drapeau
             const drapeau& playerFlag = currentPlayer->operator!();
             auto basePos = playerFlag.pos();
 
-            // Si c'est la position de la base du joueur actuel
             if (newX == basePos.first && newY == basePos.second) {
-                // Si c'est la position de base du joueur actuel
                 if (selectedUnit->operator*() != nullptr) {
-                    // L'unité porte un drapeau, on l'autorise à rentrer
-                    std::cout << "Autorisation d'accès à la base avec le drapeau" << std::endl;
                     return true;
                 }
                 std::cout << "Accès à la base refusé (pas de drapeau)" << std::endl;
@@ -110,8 +105,6 @@ namespace kpt {
 
         bool executeMove(const std::vector<std::string>& args) {
             try {
-                std::cout << "[DEBUG-MEMORY] Execute Move - Adresse de l'unité : "
-                  << (void*)selectedUnit << std::endl;
 
                 int steps = std::stoi(args[0]);
                 const std::string& direction = args[1];
@@ -130,7 +123,6 @@ namespace kpt {
                 int currentX = selectedUnit->getCurrentPosX();
                 int currentY = selectedUnit->getCurrentPosY();
 
-                // Vérifions d'abord si le déplacement total est valide
                 int finalX = currentX + (dx * steps);
                 int finalY = currentY + (dy * steps);
 
@@ -144,20 +136,17 @@ namespace kpt {
                     int checkX = currentX + (dx * i);
                     int checkY = currentY + (dy * i);
 
-                    // Double vérification de sécurité
                     if (checkX < 0 || checkX >= ROW || checkY < 0 || checkY >= COL) {
                         std::cout << "Déplacement impossible : hors limites" << std::endl;
                         return false;
                     }
 
                     int checkIndex = checkX * COL + checkY;
-                    // Vérification de sécurité pour l'index
                     if (checkIndex < 0 || checkIndex >= ROW * COL) {
                         std::cout << "Index invalide" << std::endl;
                         return false;
                     }
 
-                    std::cout << "CHECK" << checkX << " " << checkY << std::endl;
                     unitObstacle* checkCell = board[checkIndex]->operator->();
                     if (!checkCell) {
                         std::cout << "Cellule invalide" << std::endl;
@@ -169,10 +158,8 @@ namespace kpt {
                         if (dynamic_cast<riviere*>(checkCell) != nullptr) {
                             totalCost += selectedUnit->getMaximalMove();
 
-                            // On ne vérifie la case suivante que si on est sur une rivière
                             int nextX = checkX + dx;
                             int nextY = checkY + dy;
-                            std::cout << "next" << nextX << " " << nextY << std::endl;
 
                             if (!isValidPosition(nextX, nextY)) {
                                 std::cout << "La case suivante est hors limites." << std::endl;
@@ -191,7 +178,6 @@ namespace kpt {
                         }
                     }
 
-                    std::cout << "COST" << totalCost << std::endl;
                     if (totalCost > remainingMoves) {
                         return false;
                     }
@@ -201,16 +187,13 @@ namespace kpt {
                     }
                 }
 
-                // Vider l'ancienne case
                 board[currentX * COL + currentY]->operator()();
 
                 int newX = currentX + (dx * steps);
                 int newY = currentY + (dy * steps);
 
-                // Mettre à jour la position de l'unité
                 selectedUnit->setPosition(newX, newY);
 
-                // Mettre à jour la nouvelle case
                 board[newX * COL + newY]->operator=(selectedUnit);
                 board[newX * COL + newY]->operator()(*currentPlayer);
 
@@ -218,19 +201,11 @@ namespace kpt {
 
                 game->updateVisionFields(*currentPlayer, selectedUnit);
 
-                std::cout << "[DEBUG-MEMORY] Après déplacement - Adresse de l'unité : "
-                  << (void*)selectedUnit
-                  << " Position: [" << selectedUnit->getCurrentPosX()
-                  << "," << selectedUnit->getCurrentPosY() << "]" << std::endl;
-
-                // Vérifier la capture de drapeau
                 for (joueur& otherPlayer : game->getPlayers()) {
                     if (&otherPlayer == currentPlayer) continue;
 
                     drapeau& flag = otherPlayer.getFlag();
-                    std::cout << "Position réelle du drapeau : [" << flag.pos().first << "," << flag.pos().second << "]" << std::endl;
                     auto flagCurrentPos = flag.operator!();
-                    std::cout << "Position courante du drapeau : [" << flagCurrentPos.first << "," << flagCurrentPos.second << "]" << std::endl;
 
                     if (game->canCaptureFlag(selectedUnit, &flag)) {
                         game->assignFlag(otherPlayer, selectedUnit);
@@ -318,24 +293,11 @@ namespace kpt {
             return remainingMoves;
         }
 
-        // Dans TurnManager.h, modifions selectUnit :
         TurnManager<ROW,COL>& selectUnit(unite* unit) {
             selectedUnit = unit;
             if (selectedUnit) {
-                std::cout << "\n[DEBUG-MEMORY] selectUnit -----------------" << std::endl;
-                std::cout << "[DEBUG-MEMORY] Adresse de l'unité sélectionnée : " << (void*)selectedUnit << std::endl;
-                std::cout << "[DEBUG-MEMORY] Position de l'unité sélectionnée : ["
-                          << selectedUnit->getCurrentPosX() << ","
-                          << selectedUnit->getCurrentPosY() << "]" << std::endl;
-
-                std::cout << "[DEBUG-MEMORY] Unités du joueur actuel:" << std::endl;
                 if (this->currentPlayer != nullptr) {
                     const std::vector<unite*>& playerUnits = this->currentPlayer->operator*();
-                    for (unite* u : playerUnits) {
-                        std::cout << "[DEBUG-MEMORY] - Adresse: " << (void*)u
-                                  << " Position: [" << u->getCurrentPosX() << ","
-                                  << u->getCurrentPosY() << "]" << std::endl;
-                    }
                 }
 
                 std::pair<int, int> pos = {selectedUnit->getCurrentPosX(), selectedUnit->getCurrentPosY()};

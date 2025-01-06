@@ -2,7 +2,6 @@
 #define JOUEUR_H
 
 #include <vector>
-
 #include "drapeau.h"
 
 namespace kpt {
@@ -13,16 +12,17 @@ namespace kpt {
         static const short unsigned int NUMBER_OF_SHOCK_TROOPS;
         static const short unsigned int NUMBER_OF_CANON_FODDER;
         short unsigned int id;
-        std::vector<unite*> units;
+        std::vector<unite*> units;  // Stocke les pointeurs vers les unités du plateau
         drapeau flag;
 
-        joueur &initializeUnits();
+        joueur &initializeUnits();  // Gardé pour compatibilité mais non utilisé
     public:
         ~joueur();
         joueur();
         joueur(const joueur &j);
         joueur& operator=(const joueur &j);
-        const std::vector<unite*>& operator*() const;
+
+        std::vector<unite*> operator*() const;
         const drapeau& operator!() const;
         bool operator==(const joueur &p) const;
         bool operator<(const joueur &p) const;

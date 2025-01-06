@@ -85,8 +85,14 @@ cellule& cellule::operator()(const joueur &p) {
 
 cellule &cellule::operator=(const unitObstacle *uo) {
     if (entity != uo) {
-        delete entity;
-        entity = uo->clone();
+        unite* unitPtr = dynamic_cast<unite*>(const_cast<unitObstacle*>(uo));
+        if (unitPtr) {
+            delete entity;
+            entity = unitPtr;
+        } else {
+            delete entity;
+            entity = uo->clone();
+        }
         entity->operator^(uo->pos());
     }
     return *this;

@@ -11,8 +11,8 @@
 #include "../include/units/troupeDeChoc.h"
 #include "../include/units/unite.h"
 
-kpt::unitObstacle * kpt::uniteObstacleFactory::createEntity(const std::string &data,
-                                                            const std::pair<short unsigned int, short unsigned int> &pos) {
+kpt::unitObstacle* kpt::uniteObstacleFactory::createEntity(const std::string &data,
+                                                          const std::pair<short unsigned int, short unsigned int> &pos) {
     if (std::regex_match(data, std::regex("[\\.FR]"))) {
         unitObstacle *entity;
         if (data == ".")
@@ -39,7 +39,8 @@ kpt::unitObstacle * kpt::uniteObstacleFactory::createEntity(const std::string &d
     else
         unit = new troupeDeChoc;
 
+    // On initialise une seule fois l'unité
     unit->operator^(pos);
     unit->reset();
-    return unit;
+    return unit;  // Retourne l'unité originale
 }

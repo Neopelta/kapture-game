@@ -16,41 +16,24 @@ const short unsigned int joueur::NUMBER_OF_CANON_FODDER = 6;
 short unsigned int joueur::index = 0;
 
 joueur::~joueur() {
-    std::for_each(units.begin(), units.end(), [](unite* u) {
-        delete u;
-    });
+    // On ne détruit plus les unités car elles appartiennent au plateau
     units.clear();
 }
 
 joueur::joueur() {
     id = ++index;
-    this->initializeUnits();
+    // On n'initialise plus les unités ici car elles seront ajoutées par insertUnit
 }
 
 joueur::joueur(const joueur &j) {
-    std::for_each(units.begin(), units.end(), [](unite* u) {
-        delete u;
-    });
-    units.clear();
-
-    std::for_each(j.units.begin(), j.units.end(), [this](unite* u) {
-        units.push_back(u->clone());
-    });
+    units = j.units;  // Copie simple des pointeurs
     flag = j.flag;
     id = j.id;
 }
 
 joueur & joueur::operator=(const joueur &j) {
     if (this != &j) {
-        std::for_each(units.begin(), units.end(), [](unite* u) {
-            delete u;
-        });
-        units.clear();
-
-        std::for_each(j.units.begin(), j.units.end(), [this](unite* u) {
-            units.push_back(u->clone());
-        });
-
+        units = j.units;  // Copie simple des pointeurs
         flag = j.flag;
         id = j.id;
     }
@@ -58,19 +41,10 @@ joueur & joueur::operator=(const joueur &j) {
 }
 
 joueur &joueur::initializeUnits() {
-    for (short unsigned int i = 0; i < NUMBER_OF_SCOOTS; ++i)
-        units.push_back(new eclaireur);
-
-    for (short unsigned int i = 0; i < NUMBER_OF_SHOCK_TROOPS; ++i)
-        units.push_back(new troupeDeChoc);
-
-    for (short unsigned int i = 0; i < NUMBER_OF_CANON_FODDER; ++i)
-        units.push_back(new chairACanon);
-
     return *this;
 }
 
-const std::vector<unite*>& joueur::operator*() const {
+std::vector<unite*> joueur::operator*() const {
     return units;
 }
 
@@ -98,18 +72,19 @@ joueur & joueur::operator()(const drapeau &f) {
 bool joueur::operator()(const unite *u) {
     bool isIncluded = false;
     std::for_each(units.begin(), units.end(), [&](const unite *unit) {
-        isIncluded |= (*u == unit);
+        isIncluded |= (u == unit);  // Comparaison des pointeurs au lieu du contenu
     });
     return isIncluded;
 }
 
 joueur &joueur::resetUnits() {
+    // On ne détruit plus les unités, on vide simplement le vecteur
     units.clear();
     return *this;
 }
 
-joueur &joueur::insertUnit(unite *u) {
+joueur &joueur::insertUnit(unite* u) {
+    // On stocke directement le pointeur sans faire de clone
     units.push_back(u);
     return *this;
 }
-

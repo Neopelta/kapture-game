@@ -24,6 +24,7 @@ namespace kpt {
         short unsigned int currentPosY;
         drapeau* flag;  // Pointeur au lieu d'une copie directe
         virtual bool canTakeFlag() = 0;
+        virtual unite* clone() const = 0;
     public:
         unite();
         ~unite() override = default;
@@ -49,7 +50,6 @@ namespace kpt {
         virtual unitInteraction fightWithShockTroop(troupeDeChoc &st) = 0;
         bool mustBeVisible() const override;
         unite& takeFlag(drapeau &d);
-        unite* clone() const override = 0;
         drapeau* operator*() const;
         unite& operator()();
         unite& operator()(short unsigned int x, short unsigned int y);

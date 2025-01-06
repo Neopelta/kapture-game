@@ -14,8 +14,6 @@ namespace kpt {
         short unsigned int id;
         std::vector<unite*> units;
         drapeau flag;
-
-        joueur &initializeUnits();
     public:
         ~joueur();
         joueur();

@@ -242,9 +242,6 @@ namespace kpt {
                 drapeau* flag = unit->operator*();
                 if (flag != nullptr) {
                     flag->drop(currentNbTurns);
-                }
-                if (flag != nullptr) {
-                    flag->drop(currentNbTurns);
                 } else {
                     std::cerr << "[ERROR] Tentative d'accès à un drapeau null dans handleFlagDrop" << std::endl;
                 }

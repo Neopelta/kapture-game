@@ -38,10 +38,6 @@ joueur & joueur::operator=(const joueur &j) {
     return *this;
 }
 
-joueur &joueur::initializeUnits() {
-    return *this;
-}
-
 std::vector<unite*> joueur::operator*() const {
     return units;
 }

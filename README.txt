@@ -120,6 +120,10 @@ Structure du Projet
 - [ ] Gestion du drapeau qui tombe lorsque l'unité portant le drapeau perd un combat
 - [ ] Sauvegarde de la partie
 
+7. Licence
+
+Projet académique - Université de Poitiers (2025)
+
 ---
 
 Dernière mise à jour : 06 Janvier 2025
